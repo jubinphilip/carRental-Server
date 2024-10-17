@@ -48,12 +48,14 @@ class AdminQueryService{
           }
         }
         async getRentedVehicles(dateRange) {
+            if(dateRange)
+            {
             const [date1, date2] = dateRange;
             const convertedstartDate = new Date(date1);
             const convertedendDate = new Date(date2);
             convertedstartDate.setDate(convertedstartDate.getDate() + 1);
             convertedendDate.setDate(convertedendDate.getDate() + 1);
-        
+            
             if (convertedendDate && convertedstartDate) {
                 const startDate = new Date(convertedstartDate).toISOString().split('T')[0];
                 const endDate = new Date(convertedendDate).toISOString().split('T')[0];
@@ -129,7 +131,7 @@ class AdminQueryService{
                     console.log("Error:", error);
                 }
             }
-        
+            }
             else
             {
 
