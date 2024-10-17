@@ -1,0 +1,1 @@
+/* create schema for admin modue using typeDefs and resolver for admin module */
