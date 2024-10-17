@@ -35,10 +35,10 @@ class AdminQueryController{
           console.log("Error",error)
         }
     }
-    async rentVehicles()
+    async rentVehicles(dateRange)
     {
       try{
-        const getRentedVehicles=await this.adminQueryService.getRentedVehicles()
+        const getRentedVehicles=await this.adminQueryService.getRentedVehicles(dateRange)
         return getRentedVehicles
       }catch(error)
       {

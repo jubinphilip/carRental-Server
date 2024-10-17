@@ -37,9 +37,16 @@ const adminQueryResolver = {
     const cars=adminQueryController.getCar(id)
     return cars
   },
-  rentVehicles:async()=>{
-    const data=adminQueryController.rentVehicles()
+  rentVehicles:async(_,args)=>{
+    const {dateRange}=args
+    try
+    {
+    const data=await adminQueryController.rentVehicles(dateRange)
     return data
+    }catch(error)
+    {
+      console.log("Error")
+    }
   },
   getBookings:async()=>
   {

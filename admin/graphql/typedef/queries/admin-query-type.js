@@ -6,7 +6,7 @@ const adminQuerytypes = gql`
     getManufacturers: [Manufacturerdata]!
     getCarsData:[CarsData]!
     getCarData(id:ID!):CarsData!
-    rentVehicles:[RentData]!
+    rentVehicles(dateRange:[String]):[RentData]
     getBookings:[BookingsData]!
   }`
   export default adminQuerytypes
