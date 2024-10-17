@@ -90,6 +90,7 @@ class UserMutationService{
                 startlocation,
                 droplocation,
                 amount,
+                status:"Pending"
             }, { transaction });
     
         
