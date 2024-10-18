@@ -1,3 +1,4 @@
+import { createPresignedUrl } from "../../utils/createMinioUrl.js"
 import UserQueryService from "../Repo/query-helpers.js"
 class UserQueryController{
     constructor()
@@ -7,9 +8,12 @@ class UserQueryController{
     async getUserdata(id)
         {
             try {
-                const userdata=this.userQueryService.getUser(id)
+                const userdata=await this.userQueryService.getUser(id)
                 if(userdata)
                 {
+                    console.log(userdata.fileurl)
+                    userdata.fileurl=await createPresignedUrl(userdata.fileurl)
+                    console.log(userdata)
                     return userdata
                 }
             } catch (error) {

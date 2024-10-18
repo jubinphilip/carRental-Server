@@ -6,11 +6,9 @@ class UserQueryService{
   async getUser(id) {
     try {
        
-        const data = await User.findByPk(id);
-        
-        
+        const data = await User.findByPk(id); 
         if (data) {
-          console.log(data)
+         // console.log(data)
             return data;
         } else {
             

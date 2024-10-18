@@ -4,15 +4,17 @@ import { uploadFile } from "../../utils/upload-file.js";
 import { Booking } from "../graphql/typedefs/models/user-models.js";
 import { Op } from "sequelize";
 import SendOtp from "../../utils/send-otp.js";
+import { createPresignedUrl } from "../../utils/createMinioUrl.js";
 import verifyOtp from "../../utils/verify-otp.js";
-import { stat } from "fs";
+
 class UserMutationController{
     constructor(){  
         this.userMutationService = new UserMutationService();
     }
     async registerUser(file, input) {
         try {
-            const fileUrl = await uploadFile(file);
+            const userRole='user'
+            const fileUrl = await uploadFile(file,userRole);
             const user = await this.userMutationService.registerUser(fileUrl, input); // Ensure to await this if it's a promise
             
             if (user.status!=false) {
@@ -36,44 +38,43 @@ class UserMutationController{
         }
     }
     
-
-    async loginUser(input)
-    {
-        try{
-            const user=await this.userMutationService.loginUser(input)
-            console.log(user)
-            if(user.status!=false)
-            {
-                console.log(user.id,user.email,user.fileurl)
+    async loginUser(input) {
+        try {
+            const user = await this.userMutationService.loginUser(input);
+            console.log(user);
+            
+            if (user.status !== false) {
                 const token = await createToken({ id: user.id, email: user.email });
-                console.log(token)
-                return{
-                    id:user.id,
-                    email:user.email,
-                    fileurl:user.fileurl,
-                    username:user.username,
-                    token:token,
-                    status:true,
-                    message:"User Loginned"
-                }
-            }
+                const fileurl = await createPresignedUrl(user.fileurl);
+                console.log(user.id, user.email, fileurl); 
+                return {
+                    id: user.id,
+                    email: user.email,
+                    fileurl: fileurl || null,  
+                    username: user.username,
+                    token: token || null,  
+                    status: true,
+                    message: "User Logged in"
+                };
+            } 
             else
             {
-                return{
-                    id:null,
-                    email:null,
-                    fileurl:null,
+                return {
+                    id: null,
+                    email: null,
+                    fileurl: null,  
                     username:null,
-                    token:null,
-                    status:false,
-                    message:user.error
-                }
+                 
+                    status: false,
+                    message: "User Not Found"
+                };
             }
-        }catch(error){
+        } catch (error) {
             console.log("Error in UserController:", error);
             throw new Error("Error in UserController");
         }
     }
+    
     async bookCar(input)
     {
         const { startdate, enddate, carid, quantity } = input;
@@ -136,7 +137,8 @@ class UserMutationController{
            let fileUrl=''
             if(file)
             {
-            fileUrl=await uploadFile(file);
+            const userRole='user'
+            fileUrl=await uploadFile(file,userRole);
             }
             const user=this.userMutationService.editUserData(fileUrl,input)
             return user
@@ -149,7 +151,7 @@ class UserMutationController{
     {
         try
         {
-            const data=this.userMutationService.editUserPassword(input)
+            const data= await this.userMutationService.editUserPassword(input)
             return data
         }catch(error)
         {
@@ -163,7 +165,7 @@ class UserMutationController{
         try
         {
             console.log("Otp Controller")
-          //const data=  SendOtp(phone)
+          const data=  SendOtp(phone)
          console.log(phone,username,email)
           return data
         }catch(error)
@@ -179,7 +181,7 @@ class UserMutationController{
     {
         try
         {
-          const data=  verifyOtp(phone,otp)
+          const data=  await verifyOtp(phone,otp)
           return {
             status: true,
             message: "Otp verified successfully",
@@ -195,7 +197,7 @@ class UserMutationController{
     {
         try
         {
-            const data=this.userMutationService.updateBooking(sign,id)
+            const data= await this.userMutationService.updateBooking(sign,id)
         }catch(error)
         {
             console.log("Error Updating Payment",error)
