@@ -36,10 +36,15 @@ const adminQueryResolver = {
     const cars=adminQueryController.getCars()
     return cars
   },
- 
+  //Query for getting vehicle by id for editing
+  getCarData:async(_,{id})=>{
+    console.log("Function Called")
+    const cars=adminQueryController.getCar(id)
+    return cars
+  },
   //Query for getting rentvehicles
   rentVehicles:async(_,args)=>{
-    const {dateRange}=args//if daterange is passed its destrructured when user calls this function sometims daterange is paessed
+    const {dateRange}=args//if daterange is passed its destrructured when user calls this function sometims daterange is paes
     try
     {
     const data=await adminQueryController.rentVehicles(dateRange)
