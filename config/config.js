@@ -1,4 +1,4 @@
-// config/config.js
+// Configuration of postgressql database
 const config = {
     development: {
       username: 'postgres',
@@ -7,20 +7,7 @@ const config = {
       host: 'localhost',
       dialect: 'postgres',
     },
-/*     test: {
-      username: 'postgres',
-      password: 'jubin@2001',
-      database: 'test_db',
-      host: 'localhost',
-      dialect: 'postgres',
-    },
-    production: {
-      username: 'postgres',
-      password: 'jubin@2001',
-      database: 'prod_db',
-      host: 'localhost',
-      dialect: 'postgres',
-    }, */
+
   };
   
   export default config;

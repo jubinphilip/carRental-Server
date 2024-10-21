@@ -2,6 +2,7 @@ import UserQueryController from "../../../controller/user-query-controller.js";
 const userQuerycontroller=new UserQueryController()
 const userQueryResolver = {
   Query: {
+    //Query for retriving the user profile
     getUser:async(_,{id})=>
     {
       try
@@ -13,6 +14,8 @@ const userQueryResolver = {
         console.log("Error generated",error)
       }
     },
+
+    //Query for retrieving Car information
     getCarInfo:async(_,{id})=>
     {
       try
@@ -24,10 +27,13 @@ const userQueryResolver = {
         console.log("Error",error)
       }
     },
+
+    //Query for retriving booked dates of a  
     bookedDates:async(_,carId,quantity)=>
     {
       try
       {
+        //passing the quantity and carid to the controller
         const data=await userQuerycontroller.getBookingsController(carId,quantity)
         return data
       }catch(error)
@@ -36,6 +42,7 @@ const userQueryResolver = {
       }
 
     },
+    //Query for viewing a user his bookings
     getUserBookings:async(_,args)=>
     {
     const{id}=args

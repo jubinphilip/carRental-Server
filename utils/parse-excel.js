@@ -11,6 +11,5 @@ export const parseExcel = async (buffer) => {
   const sheetName = workbook.SheetNames[0];
   const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-  // Process data here if needed (e.g., validate, transform, etc.)
   return data;
 };

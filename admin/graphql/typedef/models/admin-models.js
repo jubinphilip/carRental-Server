@@ -88,7 +88,7 @@ const Vehicles = sequelize.define('Vehicles', {
 });
 
 
-
+//Rented Vehicled Model
 const RentVehicle=sequelize.define('RentedVehicles',{
   id: {
     type: DataTypes.INTEGER,

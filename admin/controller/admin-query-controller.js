@@ -1,9 +1,12 @@
 import AdminQueryService from "../Repo/query-helpers.js";
 class AdminQueryController{
+  //Creating the constructor
     constructor()
     {
         this.adminQueryService=new AdminQueryService()
     }
+
+    //Controller for getting manufacturers
     async getManufacturers()
     {
       try{
@@ -14,6 +17,8 @@ class AdminQueryController{
         console.log("Error occured at controller",error)
       }
     }
+
+    //Controller for getting cars
     async getCars()
     {
       try{
@@ -25,6 +30,7 @@ class AdminQueryController{
         console.log("Error generated",error)
       }
     }
+    //Controller for getting car by id
     async getCar(id)
     {
         try{
@@ -35,6 +41,7 @@ class AdminQueryController{
           console.log("Error",error)
         }
     }
+    //Controller  for getting rentedvehicles
     async rentVehicles(dateRange)
     {
       try{
@@ -45,6 +52,7 @@ class AdminQueryController{
         console.log("Error generated",error)
       }
     }
+    //Function for retrieving all bookings
     async bookingController()
     {
       try

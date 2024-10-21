@@ -6,7 +6,7 @@ const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const serviceSid = process.env.SERVICE_SID;
 const client = new twilio(accountSid, authToken);
-
+//Function for verifying otp inserted by the user
 const verifyOtp = async (phone, otp) => {
     let formattedPhone = phone;
 
@@ -15,6 +15,7 @@ const verifyOtp = async (phone, otp) => {
     }
 
     try {
+        //using twilio v2 service for verifying otp
         const verificationCheck = await client.verify.v2.services(serviceSid)
             .verificationChecks
             .create({ to: formattedPhone, code: otp });

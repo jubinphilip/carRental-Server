@@ -17,6 +17,8 @@ const adminQueryResolver = {
         throw new ApolloError('Error fetching admin', 'INTERNAL_SERVER_ERROR');
       }
     },
+
+    //Query for retrieving manufacturers
     getManufacturers:async()=>{
       try
       {
@@ -28,17 +30,16 @@ const adminQueryResolver = {
         console.log(error,'Error Occured')
       }
   },
+
+  //Query for getting All Vehicles
   getCarsData:async()=>{
     const cars=adminQueryController.getCars()
     return cars
   },
-  getCarData:async(_,{id})=>{
-    console.log("Function Called")
-    const cars=adminQueryController.getCar(id)
-    return cars
-  },
+ 
+  //Query for getting rentvehicles
   rentVehicles:async(_,args)=>{
-    const {dateRange}=args
+    const {dateRange}=args//if daterange is passed its destrructured when user calls this function sometims daterange is paessed
     try
     {
     const data=await adminQueryController.rentVehicles(dateRange)
@@ -48,6 +49,8 @@ const adminQueryResolver = {
       console.log("Error")
     }
   },
+
+  //Query for getting all bookings
   getBookings:async()=>
   {
    const data=adminQueryController.bookingController()

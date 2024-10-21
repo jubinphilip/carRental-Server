@@ -5,6 +5,7 @@ class UserQueryController{
     {
         this.userQueryService=new UserQueryService()
     }
+    //Function for retriving userdata
     async getUserdata(id)
         {
             try {
@@ -21,6 +22,7 @@ class UserQueryController{
             }
         
         }
+        //Controller for displaying the user carinformation
    async carInfoController(id)
    {
     try{
@@ -48,6 +50,7 @@ class UserQueryController{
         console.log(error)
     }
    }
+   //Function for dispalying the user his bookings
    async getUserBookings(id)
    {
     try{

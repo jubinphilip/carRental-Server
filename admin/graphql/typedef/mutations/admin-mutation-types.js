@@ -33,7 +33,7 @@ input updateBooking{
 
 
 type Mutation {
-  addAdmin(input: AdminInput!): Admin!  
+  addAdmin(input: AdminInput!): AdminData!  
   adminLogin(input: AdminInput!): Admin
   addManufacturer(input: AddManufacturer!): Manufacturer!
   addVehicle(primaryFile: Upload!, secondaryFiles: [Upload!]!, input: Vehicledata!): Vehicle!

@@ -5,9 +5,11 @@ import { Booking } from '../../user/graphql/typedefs/models/user-models.js'
 import { Sequelize } from 'sequelize'
 
 class AdminMutationService{
+    //Function for adding admin  values to the database
     async addAdmin(input){
         try{
             const {username,password}=input
+            //hashing password
             const hashedPassword = await bcrypt.hash(password, 10)
             const admin = await Admin.create({username,password:hashedPassword})
             console.log(admin)
@@ -18,14 +20,18 @@ class AdminMutationService{
             throw new Error("error adding admin")
         }
     }
+
+    //Function for admin Login
     async adminLogin(input) {
         try {
-            const { username, password } = input;
+            const { email, password } = input;
+            const username=email
             const admin = await Admin.findOne({ where: { username } });
             console.log(admin)
             if (!admin) {
                 return { error: "Admin not found", status: false };
             }
+            //Checking the password is correct or not
             const isValidPassword = await bcrypt.compare(password, admin.password);
             if (!isValidPassword) {
                 return { error: "Invalid password", status: false };
@@ -38,6 +44,8 @@ class AdminMutationService{
             throw new Error("Internal server error");
         }
     }
+
+    //Function for adding a new manufactufrer to the database
     async addManufacturer(input)
     {
         try{
@@ -52,10 +60,13 @@ class AdminMutationService{
             throw new Error("error adding admin")
         }
     }
+
+    //Function for adding new manufacturer from excelsheet to database
     async addExcelData(records)
     {
         try
         {
+        //looping through the data
         for (const record of records) {
 
             await Manufacturer.create({
@@ -70,8 +81,11 @@ class AdminMutationService{
         }
         };
     
+
+    //Function for adding a new vehicle
         async addVehicle({ primaryImageUrl, secondaryImageUrls, manufacturer_id, type, transmission, fuel, seats, description }) {
             try {
+                
                 const newVehicle = await Vehicles.create({
                     fileurl:primaryImageUrl,
                     secondaryImageUrls, 
@@ -89,8 +103,10 @@ class AdminMutationService{
             }
         }
         
+    //Function for adding a new vehicle to rent
         async addRentVehicle(input) {
             const { vehicleid, price, quantity } = input;
+            //if the vehicle is aready added for rent then the existing record like vehicle quantity and price can be updated
             try {
                 const isExisting= await RentVehicle.findOne({
                     where: { carid: vehicleid }  
@@ -117,7 +133,7 @@ class AdminMutationService{
                 console.log("Data Added");
         
                 const id = newCar.id;
-                
+                //Getting details of added car using id
                 try {
                     const rentRecords = await RentVehicle.findByPk(id, {
                         include: {
@@ -130,6 +146,7 @@ class AdminMutationService{
                         },
                     });
         
+                    //creating a record with details
                     if (rentRecords) {
                         console.log("Rent records found:", rentRecords);
                         
@@ -145,6 +162,7 @@ class AdminMutationService{
                         };
                 
                         console.log("TypeSense Data", vehicleData);
+                        //Passing the vehicle data to a function for adding the details to typesense
                         await addVehicleToCollection(vehicleData);
                     }
                     return newCar;
@@ -156,12 +174,14 @@ class AdminMutationService{
                 console.log("Error creating rent vehicle:", error);
             }
         }
+
+        //Function for editing an existing vehicle information 
         
     async editVehicle(fileurl, input) {
         const { manufacturer_id, type, transmission, fuel, seats, description, id } = input;
     
         const updateData = {};
-    
+    //storing the data entered by user to an object
         if (fileurl !== null) updateData.fileurl = fileurl;
         if (manufacturer_id !== null) updateData.manufacturer_id = manufacturer_id;
         if (type !== null) updateData.type = type;
@@ -170,6 +190,7 @@ class AdminMutationService{
         if (seats !== null) updateData.seats = seats;
         if (description !== null) updateData.description = description;
     
+        //only updates the data present in the updateData object
         try {
             if (Object.keys(updateData).length > 0) {
                 const [updatedRowsCount] = await Vehicles.update(updateData, {
@@ -194,6 +215,8 @@ class AdminMutationService{
             throw new Error("Failed to update vehicle");
         }
     }
+
+    //Function for deleting a vehicle
     async deleteVehicle(id) {
         try {
             const deletedVehicle = await Vehicles.destroy({
@@ -205,6 +228,8 @@ class AdminMutationService{
             console.log(error);
         }
     }
+
+    //Function for deleting rented vehicles
     async deleteRentVehicle(id)
     {
         try {
@@ -217,11 +242,13 @@ class AdminMutationService{
             console.log(error);
         }
     }
+
+    //Function for updating the booking status of  a car whether its returned or not
     async updateBooking(input)
     {
         const{id,status,carid}=input
         console.log(id,status,carid)
-        if (status == 'returned') {
+        if (status == 'returned') {//if status is returned the the database is updated with status returned
             try {
                 await Booking.update(
                     { status: 'Returned' }, 
@@ -241,7 +268,7 @@ class AdminMutationService{
         }
         else
         {
-            try {
+            try {//if status is not returned then updats the status of db by not returned
                 await Booking.update(
                     { status: 'Not Returned' }, 
                     {
@@ -250,6 +277,7 @@ class AdminMutationService{
                         }
                     }
                 );
+                //if not returned then the quantity of car is reduced by one from database
                 try {
                     await RentVehicle.update(
                         { quantity: Sequelize.literal('quantity - 1') }, 

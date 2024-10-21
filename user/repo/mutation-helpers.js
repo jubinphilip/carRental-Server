@@ -6,6 +6,7 @@ import sequelize from '../../config/db.js';
 import { RentVehicle } from '../../admin/graphql/typedef/models/admin-models.js';
 
 class UserMutationService{
+    //Function for registering new user 
     async registerUser(fileurl,input) {
         const{username,email,phone,city,state,country,pincode,password}=input
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,7 +29,7 @@ class UserMutationService{
             return ({status:false})
           }
     }
-
+//Function for loggin in user 
     async loginUser(input){
         try{
             const {email,password}=input
@@ -37,6 +38,7 @@ class UserMutationService{
                 return { error: "User not found", status: false };
               
             }
+            //Comparing the userinfo
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 return { error: "Invalid password", status: false };
@@ -47,9 +49,45 @@ class UserMutationService{
         }
     }
 
+    //Function for cehcking the availablity of cars at requested dates
+    async checkCarAvailability(startdate, enddate, carid) {
+        try {
+            return await Booking.findAll({
+                where: {
+                    carid: carid,
+                    //Fincing all bookings at that date where payment_status is completed
+
+                    payment_status: 'Completed',
+                    [Op.or]: [
+                        {
+                            startdate: {
+                                [Op.lte]: enddate,
+                            },
+                            enddate: {
+                                [Op.gte]: startdate,
+                            },
+                        },
+                        {
+                            startdate: {
+                                [Op.gte]: startdate,
+                            },
+                            enddate: {
+                                [Op.lte]: enddate,
+                            },
+                        }
+                    ],
+                },
+            });
+        } catch (error) {
+            console.log("Error checking availability", error);
+            throw error;
+        }
+    }
+
+    //Funcion for booking a car
     async carBooking(input) {
         const { carid, userid, startdate, enddate,quantity, startlocation, droplocation, amount } = input;
-    
+    //Starting a transaction to avaoid multiple transaction at same time
         const transaction = await sequelize.transaction();
         try {
             const car = await RentVehicle.findOne({
@@ -60,6 +98,7 @@ class UserMutationService{
             if (!car) {
                 throw new Error("Car not found");
             }
+            //Checking if the car is available at the requested dates
             const existingBookings = await Booking.findAll({
                 where: {
                     carid,
@@ -80,7 +119,7 @@ class UserMutationService{
             if (existingBookings.length > quantity) {
                 throw new Error("Car is already booked for the selected dates");
             }
-    
+    //Creating the booking
             const booking = await Booking.create({
                 carid,
                 userid,
@@ -90,26 +129,26 @@ class UserMutationService{
                 startlocation,
                 droplocation,
                 amount,
-                status:"Pending"
+                status:"Pending"//before payment is done by default pending is inserted
             }, { transaction });
     
         
-            await transaction.commit();
+            await transaction.commit();//After Successfull booking transaction is committed
     
             return booking;
     
         } catch (error) {
            
-            await transaction.rollback();
+            await transaction.rollback();//if any error occured rollbacks the transaction
             console.error("Error generated:", error.message);
             throw new Error("Booking failed: " + error.message);
         }
     }
-    
+    //Function for editing the userinformation
     async editUserData(fileurl, input) {
         const { userid, username, email, phone, city, state, country, pincode } = input;
     
-        
+    //Checks which all datas are changed by the user and stores that data to an object    
         const updateData = {};
         if (username) updateData.username = username;
         if (email) updateData.email = email;
@@ -119,7 +158,7 @@ class UserMutationService{
         if (country) updateData.country = country;
         if (pincode) updateData.pincode = pincode;
         if (fileurl) updateData.fileurl = fileurl;
-    
+    //Updates the new data to the database
         try {
             const user = await User.update(updateData, {
                 where: { id: userid },
@@ -133,6 +172,7 @@ class UserMutationService{
         }
     }
   
+    //Function for changing the password of user
     async editUserPassword(input) {
         const { id, currentPswd, newPswd } = input;
         try {
@@ -157,12 +197,12 @@ class UserMutationService{
             return { success: false, message: 'An error occurred while updating the password' };
         }
     }
-
+//Function which updates the booking status after successfull payment verification
     async updateBooking(sign, id) {
         try {
             const updatedBooking = await Booking.update(
                 {
-                    payment_status: 'Completed',
+                    payment_status: 'Completed',//Booking status is changed to Completed from Pending
                     razorpay_signature: sign 
                 },
                 {

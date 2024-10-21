@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import sequelize from "../../../../config/db.js";
 import { RentVehicle } from "../../../../admin/graphql/typedef/models/admin-models.js";
 
-
+//Model for storing user information
 const User = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,
@@ -53,6 +53,7 @@ const User = sequelize.define('User', {
     timestamps: true, 
 });
 
+//Model for storing Booking
 const Booking = sequelize.define('Bookings', {
     id: {
       type: DataTypes.INTEGER,

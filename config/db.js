@@ -1,12 +1,18 @@
-import { Sequelize } from "sequelize";
-import config from "./config.js";
+import { Sequelize } from "sequelize"; 
+import config from "./config.js"; // Importing database config
 
-const environment='development'
-const configEnv=config[environment]
+const environment = 'development'; 
+const configEnv = config[environment]; // Selecting config for the current environment
 
-const sequelize = new Sequelize(configEnv.database, configEnv.username, configEnv.password, {
+// Initializing Sequelize with database details from the config
+const sequelize = new Sequelize(
+  configEnv.database,
+  configEnv.username,
+  configEnv.password,
+  {
     host: configEnv.host,
-    dialect: configEnv.dialect,
-  });
-  
-  export default sequelize;
+    dialect: configEnv.dialect
+  }
+);
+
+export default sequelize; // Exporting Sequelize instance

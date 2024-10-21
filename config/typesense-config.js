@@ -1,7 +1,7 @@
 import Typesense from 'typesense';
 import dotenv from 'dotenv';
 dotenv.config();
-
+//Typesense coniguration
 const typesenseClient = new Typesense.Client({
     nodes: [
         {

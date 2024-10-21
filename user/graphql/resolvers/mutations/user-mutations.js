@@ -12,19 +12,19 @@ const userMutationController=new UserMutationController()
 const validationhelpers=new ValidationHelpers()
 
 const userMutationResolver = {
-  Upload: GraphQLUpload,
+  Upload: GraphQLUpload,//Graphql upload is user for dealing with image upload
   Mutation: {
-    
+    //Mutation for adding a new user to the database
     addUser: async (_, {file,input }) => {
 
       console.log(input,"jbhd")
 
-    const{city,country,state,pincode,password}=input
+    const{city,country,state,pincode,password}=input//destructuring the input
       try
       {
         console.log(input,"error")
-        const{error,value}=UserDetailsSchema.validate({city,country,state,pincode,password})
-        
+        const{error,value}=UserDetailsSchema.validate({city,country,state,pincode,password})//Passing the information for validation using joi 
+        //if any validation error occured function will return with the error message
         if(error)
         {
         console.log(error)  
@@ -38,17 +38,20 @@ const userMutationResolver = {
         }
         else
         {
-      return await userMutationController.registerUser(file,input)
+          //if no  error passing the validated value returned  to controller
+      return await userMutationController.registerUser(file,value)
         }
       }catch(error){
         console.log(error);
       }
     },
 
+    //Mutation for user login
     loginUser: async (_, { input }) => {
       const{email,password}=input
       try {
-        const {value,error}=Loginschema.validate({email,password})
+        const {value,error}=Loginschema.validate({email,password})//Passing data for validation
+        //if error occurs return the value
         if(error)
         {
           console.log(error)
@@ -64,65 +67,69 @@ const userMutationResolver = {
         }
         else
         {
-        return await userMutationController.loginUser(input)
+          //if no error value is passed to controller
+        return await userMutationController.loginUser(value)
         }
       } catch (error) {
           console.error('Login error:', error);
           throw new Error('Login Failed');
       }
   },
-  bookCar:async(_,{input})=>
-  {
-      console.log(input)
+
+    //Mutation for Booking  a car
+    bookCar:async(_,{input})=>
+    {
+       console.log(input)
+        try
+        {
+        const data=await userMutationController.bookCar(input)
+        return data
+        }
+        catch(error)
+        {
+          console.log(error)
+        }
+    },
+
+    //Mutation for editing the user information
+    editUser:async(_,{file,input})=>
+    {
+      console.log("Function Called",file,input)
       try
       {
-      const data=await userMutationController.bookCar(input)
-      return data
-      }
-      catch(error)
+        const data=await userMutationController.editUserController(file,input)
+        return data
+      }catch(error)
       {
-        console.log(error)
+        console.log("Error generated")
       }
-  },
-  editUser:async(_,{file,input})=>
-  {
-    console.log("Function Called",file,input)
-    try
+    },
+  //Mutation for editing the user password
+    editUserPassword:async(_,{input})=>
     {
-      const data=await userMutationController.editUserController(file,input)
+      try
+      { 
+        const data=await userMutationController.editPasswordController(input)
       return data
-    }catch(error)
-    {
-      console.log("Error generated")
-    }
-  },
-
-  editUserPassword:async(_,{input})=>
-  {
-    try
-    {
-    const data=await userMutationController.editPasswordController(input)
-    return data
-    }catch(error)
-    {
-      console.log("Error generated",error)
-    }
-  },
+      }catch(error)
+      {
+        console.log("Error generated",error)
+      }
+    },
+  //Mutation for requesting otp for user registration
   requestOtp: async (_, args) => {
     const { phone, username, email } = args;
   
     try {
      
-      const value = await userSchema.validateAsync(
-        { phone, username, email },
-        { abortEarly: false } 
-      );
-      const checkEmailExists = await validationhelpers.checkEmail(email);
-      const checkPhoneExists = await validationhelpers.checkPhone(phone);
+      const value = await userSchema.validateAsync({ phone, username, email },{ abortEarly: false }  );//Before generating otp the data is validated
+      const checkEmailExists = await validationhelpers.checkEmail(email);//Validating whether the user is already registered or not
+      const checkPhoneExists = await validationhelpers.checkPhone(phone);//Validating whether the phonenumber  is already in use
   
       if (!checkEmailExists && !checkPhoneExists) {
-        const data = await userMutationController.SendOtpController(phone, username, email);
+        const data = await userMutationController.SendOtpController(value.phone, value.username, value.email);//if both dont exist data is passed to controller
         return data;
+        //if any exist status with appropriate data is retrned
       } else if (checkEmailExists) {
         return {
           status: false,
@@ -151,12 +158,13 @@ const userMutationResolver = {
     }
   },
   
-  
+  //Mutation for verifying otp
   verifyOtp:async(_,{phone,otp})=>
     {
       try
       {
-       const data=userMutationController.verifyOtpController(phone,otp)
+        //passing the phone number and otp to controller
+       const data= await userMutationController.verifyOtpController(phone,otp)
        return data
       }catch(error)
       {
@@ -164,7 +172,7 @@ const userMutationResolver = {
       }
     },
   
-
+//Mutation for creating a razorpay Order
  createOrder : async (_,{ amount, currency }) => {
   console.log("Create Order Function Invoked");
   const razorpay = new Razorpay({
@@ -183,6 +191,7 @@ const userMutationResolver = {
 
     const order = await razorpay.orders.create(options);
     console.log("Order created successfully:", order);
+    //Afer generating order the order id is returned
     return {
       id: order.id,
       currency: order.currency,
@@ -194,6 +203,7 @@ const userMutationResolver = {
   }
 },
 
+//Mutation for verifying the payment done by the user
   verifyPayment :async(_,{paymentId,orderId,razorpay_signature,bookingId})=>
   {
     try
@@ -203,6 +213,7 @@ const userMutationResolver = {
     const generatedSignature = hmac.digest('hex');
       console.log(generatedSignature)
       if (generatedSignature === razorpay_signature) {
+        //after verification the booking id and razorpay_signature is passed to controller razorpay_signature is stored in db along with booking for further verification
         userMutationController.upDateBoookingController(razorpay_signature,bookingId)
     return {
       signature: generatedSignature,

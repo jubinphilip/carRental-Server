@@ -14,8 +14,9 @@ type AdminData {
 
     
 type Manufacturer{
-id:ID!
-status:String!
+id:ID
+status:Boolean!
+message:String!
 }
 
 type Manufacturerdata{

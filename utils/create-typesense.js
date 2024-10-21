@@ -1,6 +1,7 @@
 import typesenseClient from "../config/typesense-config.js";
 
 export const createCollection = async () => {
+    //Schema for creating a collection in typesense
     const collectionSchema = {
         name: 'cars',
         fields: [
@@ -17,6 +18,7 @@ export const createCollection = async () => {
 
     try {
         console.log('Creating collection...');
+        //Function for creating Collection
         const response = await typesenseClient.collections().create(collectionSchema);
         console.log('Collection Created:', response);
     } catch (error) {

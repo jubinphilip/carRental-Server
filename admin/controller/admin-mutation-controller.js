@@ -8,6 +8,8 @@ class AdminMutationController {
     constructor() {
      this.adminMutations=new AdminMutationService()
     }
+
+    //Controller for adding a new Admin
     async addAdmin(input) {  
         try {
           const newAdmin = await this.adminMutations.addAdmin(input);
@@ -17,15 +19,15 @@ class AdminMutationController {
           throw new Error("Error in AdminController");
         }
       }
-  
-      async adminLogin(input){
+  //Function for Admin Login
+      async adminLogin(value){
           try{
-              const admin = await this.adminMutations.adminLogin(input);
+              const admin = await this.adminMutations.adminLogin(value);
               console.log(admin)
               let logindata;
               if(admin.status!=false)
               {
-                 logindata=await createToken(admin)
+                 logindata=await createToken(admin)//creating token for admin after login
                  return {
                   token: logindata,
                   status: true,
@@ -52,6 +54,7 @@ class AdminMutationController {
               console.log("Error in AdminController:", error);
           }
       }
+      //
       async addManufacturer(input){
         try{
           const newManufacturer = await this.adminMutations.addManufacturer(input);
@@ -60,7 +63,8 @@ class AdminMutationController {
           {
             return{
               id : newManufacturer.id,
-              status:"Success"
+              status:true,
+              message:"Manufactured Added"
             }
           }
         }
@@ -69,6 +73,7 @@ class AdminMutationController {
           console.log("error in manufacturer conroller",error)
         }
       }
+      //Function for adding exce data to manufacturers model
       async addExcelData(file) {
         try {
           console.log("File Structure",file)
@@ -80,10 +85,10 @@ class AdminMutationController {
               const buffer = Buffer.concat(chunks);
               try {
               
-                const records = await parseExcel(buffer);
+                const records = await parseExcel(buffer);//Passed the excel file to   a function for retrieving records
       
 
-                await this.adminMutations.addExcelData(records); 
+                await this.adminMutations.addExcelData(records);//passing the record to database 
       
                 resolve({
                   status: 'Success',
@@ -111,17 +116,16 @@ class AdminMutationController {
           throw new Error("Failed to add Excel data: " + error.message); // Rethrow the error for higher-level handling
         }
       }
-      
 
       async addVehicleController(primaryFile, secondaryFiles, input) {
         try {
             // Upload the primary image
             const primaryFileUrl = await uploadFile(primaryFile);
-            console.log("Primary Image URL:", primaryFileUrl);
+            console.log("Primary Image URL:", primaryFileUrl);//minio returns image urls as response this urls are passed to database for storing
     
             // Upload secondary images
             const secondaryFileUrls = await Promise.all(
-                secondaryFiles.map(file => uploadFile(file))
+                secondaryFiles.map(file => uploadFile(file))//Function for adding files to minio
             );
             console.log("Secondary Images URLs:", secondaryFileUrls);
     
@@ -150,7 +154,7 @@ class AdminMutationController {
     {
       try{
         const deleteVehicle=await this.adminMutations.deleteVehicle(id)
-       deleteCarByCarId(id)
+       deleteCarByCarId(id)//passsing the carid to typesnse function for deleting it from typesense here carid is passsed
         return{
           id:deleteVehicle,
           status:"Success"
@@ -167,7 +171,7 @@ class AdminMutationController {
       try
       {
         const deleteVehicle=await this.adminMutations.deleteRentVehicle(id)
-       deleteCarFromTypesense(id)
+       deleteCarFromTypesense(id)//passsing the carid to typesnse function for deleting it from typesense here rentedcarid is passsed
         if(deleteVehicle.status!=false)
         {
           return {
@@ -180,6 +184,7 @@ class AdminMutationController {
         console.log("Error generated",error)
       }
     }
+
     async editVehicleController(file,input)
     {
       try
@@ -187,7 +192,7 @@ class AdminMutationController {
         let fileUrl=''
         if(file)
         {
-         fileUrl=await uploadFile(file)
+         fileUrl=await uploadFile(file)//adding new file to minio
         }
         const newVehicle=await this.adminMutations.editVehicle(fileUrl,input)
         if(newVehicle)
@@ -223,6 +228,7 @@ class AdminMutationController {
         console.log("Error in controller",error)
       }
     }
+    //Controller for controlling booking update whether the car is returned or  not
     async updateBookingController(input)
     {
       try
