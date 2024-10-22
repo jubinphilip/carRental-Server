@@ -194,22 +194,7 @@ class UserMutationController{
             console.log("Error geenarted in controller")
         }
     }
-    async getCarReviews(carid)
-    {
-        try
-        {
-            const data=await this.userMutationService.getReview(carid)
-            if(data)
-            {
-                return{
-                
-                }
-            }
-        }catch(error)
-        {
-            console.log(error)
-        }
-    }
+  
 }
 
 

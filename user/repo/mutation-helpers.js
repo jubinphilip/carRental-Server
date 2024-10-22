@@ -49,7 +49,7 @@ class UserMutationService{
         }
     }
 
-    //Function for cehcking the availablity of cars at requested dates
+    //Function for checking the availablity of cars at requested dates
     async checkCarAvailability(startdate, enddate, carid) {
         try {
             return await Booking.findAll({
@@ -131,14 +131,10 @@ class UserMutationService{
                 amount,
                 status:"Pending"//before payment is done by default pending is inserted
             }, { transaction });
-    
-        
             await transaction.commit();//After Successfull booking transaction is committed
-    
             return booking;
-    
         } catch (error) {
-           
+
             await transaction.rollback();//if any error occured rollbacks the transaction
             console.error("Error generated:", error.message);
             throw new Error("Booking failed: " + error.message);
