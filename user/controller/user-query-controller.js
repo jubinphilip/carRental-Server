@@ -1,5 +1,5 @@
 import { createPresignedUrl } from "../../utils/createMinioUrl.js"
-import UserQueryService from "../Repo/query-helpers.js"
+import UserQueryService from "../repo/query-helpers.js"
 class UserQueryController{
     constructor()
     {
@@ -61,6 +61,17 @@ class UserQueryController{
     catch(error)
     {
         console.log("Error in Controller",error)
+    }
+   }
+
+   async getCarReviews(carid)
+   {
+    try{
+        const reviewData=await this.userQueryService.getAllReviews(carid)
+        return reviewData
+    }catch(error)
+    {
+        console.log(error)
     }
    }
 }

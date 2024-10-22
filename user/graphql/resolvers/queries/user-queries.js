@@ -53,6 +53,19 @@ const userQueryResolver = {
     {
       console.log("Error generated",error)
     }
+    },
+    async getCarReviews(_,args)
+    {
+      const {carId}=args
+        try
+        {
+        const data= await userQuerycontroller.getCarReviews(carId)
+        console.log(JSON.stringify(data, null, 2));
+        return data
+        }catch(error)
+        {
+          console.log("Error generated")
+        }
     }
   },
 };

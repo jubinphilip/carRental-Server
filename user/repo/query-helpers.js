@@ -1,5 +1,5 @@
 import { Vehicles,RentVehicle,Manufacturer } from "../../admin/graphql/typedef/models/admin-models.js";
-import {User,Booking} from '../graphql/typedefs/models/user-models.js'
+import {User,Booking, Review} from '../graphql/typedefs/models/user-models.js'
 
 class UserQueryService{
   
@@ -37,6 +37,8 @@ class UserQueryService{
           throw error; 
         }
       }
+
+      //Function for retriving all booked date of a particular car
       async getBookingDates({ carId, quantity }) {
         console.log("Car ID:", carId, "Quantity:", quantity);
         try {
@@ -47,7 +49,7 @@ class UserQueryService{
                 },
             });
     
-            console.log("Bookings fetched:", bookings);
+           // console.log("Bookings fetched:", bookings);
     
             const bookingsByDate = {};
     
@@ -64,12 +66,12 @@ class UserQueryService{
                 }
             });
     
-            console.log("Bookings by date:", bookingsByDate);
+           // console.log("Bookings by date:", bookingsByDate);
     
             const availableCars = parseInt(quantity, 10);
             const bookedDates = Object.keys(bookingsByDate).filter(date => bookingsByDate[date] >= availableCars);
     
-            console.log("Filtered booked dates:", bookedDates);
+          //  console.log("Filtered booked dates:", bookedDates);
     
             return {
                 id: carId,
@@ -80,6 +82,8 @@ class UserQueryService{
             return [];
         }
     }
+
+    //Retrive bookings by the user
     async getUsersBookings(userId) {
       try {
           const records = await Booking.findAll({
@@ -115,7 +119,31 @@ class UserQueryService{
           throw error;  
       }
   }
-  
-  }    
+  async getAllReviews(carid)
+  {
+   const data=await Review.findAll({
+    where:{
+        carid:carid
+    },
+    include:[
+        {
+            model:User,
+            attributes:['id','username','createdAt']
+        }
+    ],
+   })
+   //console.log("Datas",data)
+   if(data.length>0)
+   {
+    const totalrating=data.reduce((sum,review)=>sum+review.rating,0)
+    const averageRating=totalrating/data.length
+    //console.log("Rating",averageRating)
+    return{
+        averageRating,
+        reviews:data,
+    }
+   }
+  }
+}    
 
 export default UserQueryService;

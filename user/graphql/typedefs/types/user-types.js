@@ -120,5 +120,27 @@ type UserBookingsData{
     createdAt:String!
     RentedVehicle:RentData!
   }
-`
+  type RatingResponse{
+    status:String!
+    message:String!
+  }
+
+
+type UserReview {
+  id: ID
+  username: String
+  createdAt: String
+}
+type Review {
+  id: ID                             
+  rating: Float          
+  review: String              
+  User: UserReview           
+}
+  
+type Reviews {
+  averageRating: Float  
+  reviews: [Review]      
+}`
+
 export default userTypes

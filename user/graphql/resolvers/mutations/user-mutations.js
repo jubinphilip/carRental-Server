@@ -224,6 +224,17 @@ const userMutationResolver = {
     {
       console.log(error)
     }
+  },
+  //Mutation for adding rating for a car
+  addReview:async(_,{input})=>
+  {
+    try{
+      const review = await userMutationController.reviewController(input)
+      return review
+    }catch(error)
+    {
+      console.log(error)
+    }
   }
   } 
 

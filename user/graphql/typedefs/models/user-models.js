@@ -1,6 +1,6 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 import sequelize from "../../../../config/db.js";
-import { RentVehicle } from "../../../../admin/graphql/typedef/models/admin-models.js";
+import { RentVehicle, Vehicles } from "../../../../admin/graphql/typedef/models/admin-models.js";
 
 //Model for storing user information
 const User = sequelize.define('User', {
@@ -103,7 +103,36 @@ const Booking = sequelize.define('Bookings', {
       defaultValue: null
     }
   });
-  
+
+
+  const Review=sequelize.define('Reviews',{
+    id:{
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement:true
+    },
+    userid:{
+      type: DataTypes.INTEGER,
+      references:{
+        model:User,
+        key:'id'
+        }
+        },
+    carid:{
+      type:DataTypes.INTEGER,
+      references:{
+        model:RentVehicle,
+        key:'id'
+      }
+    },
+    rating:{
+      type:DataTypes.INTEGER,
+      },
+      review:{
+        type:DataTypes.STRING
+      }
+      
+  })
   
 User.hasMany(Booking, { foreignKey: 'userid' });
 Booking.belongsTo(User, { foreignKey: 'userid' });
@@ -111,6 +140,23 @@ Booking.belongsTo(User, { foreignKey: 'userid' });
 RentVehicle.hasMany(Booking, { foreignKey: 'carid' });
 Booking.belongsTo(RentVehicle, { foreignKey: 'carid' });
 
+User.hasMany(Review, {
+  foreignKey: 'userid', 
+  onDelete: 'CASCADE', 
+});
+
+RentVehicle.hasMany(Review, {
+  foreignKey: 'carid', 
+  onDelete: 'CASCADE', 
+});
+
+Review.belongsTo(User, {
+  foreignKey: 'userid', 
+});
+
+Review.belongsTo(RentVehicle, {
+  foreignKey: 'carid', 
+});
 
 
-export {User,Booking}
+export {User,Booking,Review}

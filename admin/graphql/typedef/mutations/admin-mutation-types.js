@@ -43,6 +43,7 @@ type Mutation {
   addRent(input:Rentdata!):Vehicle!
   uploadExcel(file: Upload!): UploadResponse!
   updateReturnVehicle(input:updateBooking!):UpdateResponse!
+
 }`
 export default adminMutationtypes
 

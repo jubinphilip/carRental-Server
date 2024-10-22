@@ -6,6 +6,7 @@ const userQueryTypes = gql`
     getCarInfo(id:ID!):Carinfo!
      bookedDates(carId: ID!, quantity:String!):Bookings!
       getUserBookings(id:ID!):[UserBookingsData]!
+    getCarReviews(carId: ID!):Reviews
 }
 `;
 

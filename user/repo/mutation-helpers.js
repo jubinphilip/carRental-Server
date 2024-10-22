@@ -1,6 +1,6 @@
 
 import bcrypt from 'bcrypt'
-import {Booking, User} from '../graphql/typedefs/models/user-models.js';
+import {Booking, Review, User} from '../graphql/typedefs/models/user-models.js';
 import {  Op } from 'sequelize';
 import sequelize from '../../config/db.js';
 import { RentVehicle } from '../../admin/graphql/typedef/models/admin-models.js';
@@ -222,6 +222,40 @@ class UserMutationService{
             throw new Error('Error updating booking');
         }
     }
+    async addReview(input)
+    {
+        const{carid,userid,rating,review}=input
+        console.log(input,"input reached")
+        try{
+            const data=await Review.create(
+                {
+                    carid,
+                    userid,
+                    rating,
+                    review
+                }
+            )
+            if(data)
+            {
+                console.log("data",data)
+                return{
+                    status:true,
+                    message:"Review Added"
+                }
+            }
+            else
+            {
+                return{
+                    status:false,
+                    message:"Failed to add review"
+                }
+            }
+        }catch(error)
+        {
+            console.log("Error generated",error)
+        }
+    }
+ 
     
     
 }
