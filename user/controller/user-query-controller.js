@@ -64,6 +64,7 @@ class UserQueryController{
     }
    }
 
+   //Function for Retrieving Reviews and ratings by the user
    async getCarReviews(carid)
    {
     try{

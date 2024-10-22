@@ -119,6 +119,7 @@ class UserQueryService{
           throw error;  
       }
   }
+  //getting all reviews with carid
   async getAllReviews(carid)
   {
    const data=await Review.findAll({
@@ -135,6 +136,7 @@ class UserQueryService{
    //console.log("Datas",data)
    if(data.length>0)
    {
+    //getting the average rating and returning it
     const totalrating=data.reduce((sum,review)=>sum+review.rating,0)
     const averageRating=totalrating/data.length
     //console.log("Rating",averageRating)
