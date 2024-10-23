@@ -84,6 +84,7 @@ type BookingsData{
     User:User!
   }
  type UpdateResponse{
+    statuscode:String!
     status:Boolean!
     message:String!
   }  

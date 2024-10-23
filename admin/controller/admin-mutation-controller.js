@@ -360,6 +360,7 @@ class AdminMutationController {
         {
           return{
             status:true,
+            statuscode:200,
             message:"Status Updated Successfully"
           }
         }
@@ -367,12 +368,17 @@ class AdminMutationController {
         {
           return{
             status:false,
+            statuscode:400,
             message:"Status Not Updated"
           }
         }
       }catch(error)
       {
-        console.log(error)
+        return{
+          status:false,
+          statuscode:500,
+          message:"Internal Server Error"
+        }
       }
     }
 }
