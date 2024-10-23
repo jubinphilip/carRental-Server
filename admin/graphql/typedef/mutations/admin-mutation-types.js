@@ -37,6 +37,7 @@ type Mutation {
   adminLogin(input: AdminInput!): Admin
   addManufacturer(input: AddManufacturer!): Manufacturer!
   addVehicle(primaryFile: Upload!, secondaryFiles: [Upload!]!, input: Vehicledata!): InsertResponse!
+  deleteManufacturer(id:ID!):DeleteResponse!
   deleteVehicle(id:ID!):  DeleteResponse!
   deleteRentVehicles(id:ID!): DeleteResponse!
   editVehicle(file:Upload!,input: Vehicledata!): InsertResponse!

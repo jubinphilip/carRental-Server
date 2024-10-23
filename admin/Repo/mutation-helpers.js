@@ -221,7 +221,18 @@ class AdminMutationService{
             throw new Error("Failed to update vehicle");
         }
     }
-
+    async deleteManufacturer(id)
+    {
+     try
+     {
+       const data= await Manufacturer.destroy({where:{id}})
+       return data
+     }catch(error)
+     {
+        console.log(error)
+        throw new Error
+     }
+    }
     //Function for deleting a vehicle
     async deleteVehicle(id) {
         try {

@@ -248,7 +248,36 @@ class AdminMutationController {
         }
       }
     }
-
+    async deleteManufacturer(id)
+    {
+      try
+      {
+        const data= await this.adminMutations.deleteManufacturer(id)
+        if(data)
+        {
+          return{
+            statuscode:200,
+            status:true,
+            message:"Manufacturer Removed Successfully"
+          }
+        }
+        else
+        {
+          return{
+            statuscode:200,
+            status:false,
+            message:"Manufacturer Not Removed"
+          }
+        } 
+      }catch(error)
+      {
+        return{
+          statuscode:500,
+          status:false,
+          message:"Internal Server Error"
+        }
+      }
+    }
     async editVehicleController(file,input)
     {
       try

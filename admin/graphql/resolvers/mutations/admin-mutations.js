@@ -58,7 +58,7 @@ adminLogin: async (_, { input }) => {
       catch(error)
       {
         console.log(error)
-        
+
       }
     },
 //Mutation for adding a new vehicle
@@ -75,7 +75,18 @@ adminLogin: async (_, { input }) => {
         throw new Error("Failed to add vehicle");
       }
     },
-    
+  //Mutation for deleting a manufacturer
+    deleteManufacturer:async(_,{id})=>
+    {
+      try
+      {
+      const data=await adminMutationController.deleteManufacturer(id)
+      return data
+      }catch(error)
+      {
+        console.log(error)
+      }
+    },
   //Mutation for deleting  a car
   deleteVehicle:async(_,{id})=>{
   
