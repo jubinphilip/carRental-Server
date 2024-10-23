@@ -36,11 +36,11 @@ type Mutation {
   addAdmin(input: AdminInput!): AdminData!  
   adminLogin(input: AdminInput!): Admin
   addManufacturer(input: AddManufacturer!): Manufacturer!
-  addVehicle(primaryFile: Upload!, secondaryFiles: [Upload!]!, input: Vehicledata!): Vehicle!
+  addVehicle(primaryFile: Upload!, secondaryFiles: [Upload!]!, input: Vehicledata!): InsertResponse!
   deleteVehicle(id:ID!):  DeleteResponse!
   deleteRentVehicles(id:ID!): DeleteResponse!
-  editVehicle(file:Upload!,input: Vehicledata!): Vehicle!
-  addRent(input:Rentdata!):Vehicle!
+  editVehicle(file:Upload!,input: Vehicledata!): InsertResponse!
+  addRent(input:Rentdata!): InsertResponse!
   uploadExcel(file: Upload!): UploadResponse!
   updateReturnVehicle(input:updateBooking!):UpdateResponse!
 

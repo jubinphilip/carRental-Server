@@ -62,7 +62,7 @@ input BookingInput {
     verifyOtp(phone: String!,otp:String!): OTPResponse
     createOrder(amount: Float!, currency: String!): Order
     verifyPayment(paymentId: String!, orderId: String!,razorpay_signature:String!, bookingId:String!): Verification!
-     addReview(input:ReviewInput!):RatingResponse!
+    addReview(input:ReviewInput!):RatingResponse!
   }
 `;
 

@@ -75,9 +75,15 @@ class AdminMutationService{
               year: record.year,
             });
           }
+          return{
+            status:true
+          }
         }catch(error)
         {
             console.log(error)
+            return{
+                status:false
+            }
         }
         };
     

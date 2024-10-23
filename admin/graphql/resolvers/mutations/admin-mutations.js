@@ -20,21 +20,16 @@ adminLogin: async (_, { input }) => {
   try {
     const { username, password } = input;
     const email = username;
-
-   
     const { value, error } = Loginschema.validate({ email, password });
     // Handle validation error
     if (error) {
       console.log(error);
       return {
-        id: null,
-        email: null,
+        statuscode:422,
         status: false,
         message: error.details[0].message,  
       };
     }
-
-
     return await adminMutationController.adminLogin(value);
     
   } catch (error) {
@@ -53,6 +48,7 @@ adminLogin: async (_, { input }) => {
             console.log(error)
             return{
               id:null,
+              statuscode:422,
               status:false,
               message:error.details[0].message
             }
@@ -62,6 +58,7 @@ adminLogin: async (_, { input }) => {
       catch(error)
       {
         console.log(error)
+        
       }
     },
 //Mutation for adding a new vehicle
@@ -136,6 +133,7 @@ uploadExcel: async (parent, { file }) => {
   }catch(error)
   {
     console.log("error reading data")
+    return
   }
 },
 //Mutation for dealing with the  return of vehicle

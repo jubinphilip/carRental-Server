@@ -29,22 +29,19 @@ class AdminMutationController {
               {
                  logindata=await createToken(admin)//creating token for admin after login
                  return {
+                  statuscode:200,
                   token: logindata,
                   status: true,
                   message: "Login successful",
-                  data: {
-                    id: admin.admin.dataValues.id,
-                    username: admin.admin.dataValues.username
-                  }
                 };
               }
               if(admin.status===false)
                 {
                   return {
+                    statuscode:401,
                     token: null,
                     status: false,
                     message: admin.error,
-                    data:null
                   };
                 }
             
@@ -52,6 +49,12 @@ class AdminMutationController {
           }catch(error)
           {
               console.log("Error in AdminController:", error);
+              return{
+                statuscode:500,
+                    token: null,
+                    status: false,
+                    message: "Internal Server Error",
+              }
           }
       }
       //
@@ -62,6 +65,7 @@ class AdminMutationController {
           if(newManufacturer)
           {
             return{
+              statuscode:200,
               id : newManufacturer.id,
               status:true,
               message:"Manufactured Added"
@@ -71,34 +75,52 @@ class AdminMutationController {
         catch(error)
         {
           console.log("error in manufacturer conroller",error)
+          return{
+            statuscode:500, 
+            status:false,
+            id:null,
+            message:"Internal Server Error"
+
+          }
         }
       }
       //Function for adding exce data to manufacturers model
+      
       async addExcelData(file) {
         try {
-          console.log("File Structure",file)
-          const stream = file.file.createReadStream()
+          console.log("File Structure", file);
+          const stream = file.file.createReadStream();
           const chunks = [];
+      
+          // Read the file in chunks
           stream.on('data', (chunk) => chunks.push(chunk));
+      
           return new Promise((resolve, reject) => {
             stream.on('end', async () => {
               const buffer = Buffer.concat(chunks);
               try {
-              
-                const records = await parseExcel(buffer);//Passed the excel file to   a function for retrieving records
+                const records = await parseExcel(buffer); // Retrieve records from the Excel file
+                const data = await this.adminMutations.addExcelData(records); // Pass the records to the database
       
-
-                await this.adminMutations.addExcelData(records);//passing the record to database 
-      
-                resolve({
-                  status: 'Success',
-                  message: 'Excel file processed successfully.',
-                });
+                if (data.status === true) {
+                  resolve({
+                    status: true,
+                    message: "Excel data Uploaded",
+                    statusCode: 200, // Success
+                  });
+                } else {
+                  reject({
+                    status: false,
+                    message: "Excel data Upload Failed",
+                    statusCode: 400, // Bad Request or similar
+                  });
+                }
               } catch (error) {
                 console.error("Error while parsing and inserting records:", error);
                 reject({
                   status: 'Error',
                   message: 'Failed to process Excel file: ' + error.message,
+                  statusCode: 500, // Internal Server Error
                 });
               }
             });
@@ -108,15 +130,20 @@ class AdminMutationController {
               reject({
                 status: 'Error',
                 message: 'Stream error: ' + error.message,
+                statusCode: 500, // Stream error is considered a server error
               });
             });
           });
         } catch (error) {
           console.error("Error in addExcelData:", error);
-          throw new Error("Failed to add Excel data: " + error.message); // Rethrow the error for higher-level handling
+          throw {
+            message: "Failed to add Excel data: " + error.message,
+            statusCode: 500, // Internal Server Error
+          };
         }
       }
-
+      
+      
       async addVehicleController(primaryFile, secondaryFiles, input) {
         try {
             // Upload the primary image
@@ -139,9 +166,16 @@ class AdminMutationController {
             if (newVehicle) {
                 console.log("Data inserted:", newVehicle);
                 return {
-                    id: newVehicle.id,
-                    status: "Success",
+                    status:true,
+                    message:"New Vehicle Added"
                 };
+            }
+            else
+            {
+              return{
+                status:false,
+                message:"Vehicle Addition Failed"
+              }
             }
         } catch (error) {
             console.log("Error occurred at controller:", error);
@@ -155,14 +189,31 @@ class AdminMutationController {
       try{
         const deleteVehicle=await this.adminMutations.deleteVehicle(id)
        deleteCarByCarId(id)//passsing the carid to typesnse function for deleting it from typesense here carid is passsed
-        return{
-          id:deleteVehicle,
-          status:"Success"
+       if(deleteVehicle) 
+      {
+       return{
+          statuscode:200,
+          message:"Vehicle Deleted Successfully",
+          status:true
         }
+      }
+      else
+      {
+        return{
+          statuscode:204,
+          message:"Vehicle Not Found ",
+          status:false
+        }
+      }
     
       }catch(error)
       {
         console.log("Error generated",error)
+        return{
+          statuscode:500,
+          message:"Internal Server Error",
+          status:false
+        }
       }
     }
 
@@ -175,13 +226,26 @@ class AdminMutationController {
         if(deleteVehicle.status!=false)
         {
           return {
+            statuscode:200,
             status:true,
             message:"Car Removed From Rented Vehicles List"
+          }
+        }
+        else{
+          return {
+            statuscode:204,
+            status:false,
+            message:"Action Failed "
           }
         }
       }catch(error)
       {
         console.log("Error generated",error)
+        return{
+          statuscode:500,
+          message:"Internal Server Error",
+          status:false
+        }
       }
     }
 
@@ -199,8 +263,15 @@ class AdminMutationController {
         {
           console.log("Data inserted")
           return{
-            id:newVehicle.id,
-            status:"Success"
+            status:true,
+            message:"Vehicle Details Edited"
+          }
+        }
+        else
+        {
+          return{
+            status:false,
+            message:"Edit Failed"
           }
         }
 
@@ -213,19 +284,23 @@ class AdminMutationController {
     {
       try
       {
-        console.log("createcolllection")
+       // console.log("createcolllection")
         await createCollection()
         const rentedVehicle=await this.adminMutations.addRentVehicle(input)
         if(rentedVehicle)
        {
         return{
-          id : rentedVehicle.id,
-          status:"Success"
+         status:true,
+         message:"Car Added"
         }
        }
       }catch(error)
       {
         console.log("Error in controller",error)
+        return{
+          status:false,
+          message:"Action Failed"
+        }
       }
     }
     //Controller for controlling booking update whether the car is returned or  not
