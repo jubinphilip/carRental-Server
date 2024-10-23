@@ -17,8 +17,6 @@ const userMutationResolver = {
     //Mutation for adding a new user to the database
     addUser: async (_, {file,input }) => {
 
-      console.log(input,"jbhd")
-
     const{city,country,state,pincode,password}=input//destructuring the input
       try
       {
@@ -39,7 +37,11 @@ const userMutationResolver = {
         else
         {
           //if no  error passing the validated value returned  to controller
+          value.username=input.username
+          value.phone=input.phone
+          value.email=input.email
       return await userMutationController.registerUser(file,value)
+      
         }
       }catch(error){
         console.log(error);
