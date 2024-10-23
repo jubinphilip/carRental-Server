@@ -166,6 +166,7 @@ class AdminMutationController {
             if (newVehicle) {
                 console.log("Data inserted:", newVehicle);
                 return {
+                  statuscode:200,
                     status:true,
                     message:"New Vehicle Added"
                 };
@@ -173,13 +174,20 @@ class AdminMutationController {
             else
             {
               return{
+                statuscode:400,
                 status:false,
                 message:"Vehicle Addition Failed"
               }
             }
         } catch (error) {
             console.log("Error occurred at controller:", error);
-            throw new Error("Failed to add vehicle");
+            return{
+              statuscode:400,
+                status:false,
+                message:"Internal Server Error"
+            }
+    
+
         }
     }
     
@@ -319,14 +327,24 @@ class AdminMutationController {
         if(rentedVehicle)
        {
         return{
+        statuscode:200, 
          status:true,
          message:"Car Added"
+        }
+       }
+       else
+       {
+        return{
+          statuscode:400,
+          status:false,
+          message:"Car Not Added"
         }
        }
       }catch(error)
       {
         console.log("Error in controller",error)
         return{
+          statuscode:500,
           status:false,
           message:"Action Failed"
         }

@@ -1,7 +1,7 @@
 import AdminMutationController from '../../../controller/admin-mutation-controller.js';
 const adminMutationController=new AdminMutationController()
 import { Loginschema } from '../../../../user/requests/user-loginrequest.js';
-import { carSchema } from '../../../requests/manufacturer-request.js';
+import { carSchema, vehicleSchema } from '../../../requests/manufacturer-request.js';
 import { GraphQLUpload } from 'graphql-upload';
 const adminMutationResolver = {
   Upload: GraphQLUpload,//GraphQLUploadFor handling imageupload
@@ -64,12 +64,25 @@ adminLogin: async (_, { input }) => {
 //Mutation for adding a new vehicle
     addVehicle: async (_, { primaryFile, secondaryFiles, input }) => {
       try {
-        const vehicle = await adminMutationController.addVehicleController(primaryFile, secondaryFiles, input);
-    
-        if (vehicle) {
-          console.log("Vehicle Added", vehicle);
-          return vehicle; 
+        console.log(primaryFile,secondaryFiles,input)
+        const{value,error}=await vehicleSchema.validate(input)
+        if(error)
+        {
+          console.log(error)
+          return{
+            statuscode:422,
+            status:false,
+            message:error.details[0].message
+          }
         }
+        else
+        {
+          console.log(value)
+        }
+        const vehicle = await adminMutationController.addVehicleController(primaryFile, secondaryFiles, input);
+  
+          return vehicle; 
+        
       } catch (error) {
         console.error("Error adding vehicle:", error);
         throw new Error("Failed to add vehicle");

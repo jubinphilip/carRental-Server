@@ -29,4 +29,54 @@ const carSchema = Joi.object({
     })
 });
 
-export {carSchema}
+const vehicleSchema = Joi.object({
+ 
+  manufacturer_id: Joi.string()
+      .required()
+      .messages({
+          'any.required': 'Select a manufacturer.'
+      }),
+  
+  type: Joi.string()
+      .required()
+      .messages({
+          'any.required': 'Vehicle type is required.'
+      }),
+
+  transmission: Joi.string()
+      .required()
+      .messages({
+          'any.required': 'Transmission type is required.'
+      }),
+
+  fuel: Joi.string()
+      .required()
+      .messages({
+
+          'any.required': 'Fuel type is required.'
+      }),
+
+  seats: Joi.string()
+      .required()
+      .messages({
+
+          'any.required': 'Seats are required.'
+      }),
+
+      description: Joi.string()
+      .custom((value, helpers) => {
+        const wordCount = value.trim().split(/\s+/).length;
+        console.log(wordCount)
+        if (wordCount > 30) {
+          return helpers.message('Description must contain at most 30 words.');
+        }
+        return value;
+      })
+      .required()
+      .messages({
+        'string.base': 'Description must be a string.',
+        'any.required': 'Description is required.'
+      })
+});
+
+export {carSchema ,vehicleSchema}

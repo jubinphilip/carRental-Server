@@ -13,7 +13,16 @@ type Manufacturer{
   status:Boolean!
   message:String!
 }
-
+type DeleteResponse{
+  statuscode:String!
+  status:Boolean!
+  message:String!
+}
+type InsertResponse{
+statuscode:String!
+status:Boolean!
+message:String!
+}
 
 type AdminData {
   id: ID!
@@ -33,11 +42,7 @@ type Vehicle{
 id:ID
 status:String!
 }
-type DeleteResponse{
-statuscode:String!
-  status:Boolean!
-  message:String!
-}
+
 type UploadResponse {
     statuscode:String!
     status: Boolean!
@@ -66,10 +71,7 @@ type RentData {
   price: String!
   quantity:String!
 }
-type InsertResponse{
-status:Boolean!
-message:String!
-}
+
 type BookingsData{
   id:ID!
    startdate:String!
