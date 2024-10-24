@@ -3,11 +3,16 @@ const userTypes=gql`
 
   type RegisterResponse
   {
+  statuscode:Int
   status:Boolean!
   message:String!
   data:User
   }
-
+type OTPResponse {
+  statuscode:Int
+  status: Boolean
+  message: String
+}
 type User {
     id: ID
     username: String!
@@ -24,12 +29,20 @@ type User {
 
 type LoginResponse {
   id: ID
+  statuscode:Int
   status:String
   message:String
   email: String
   token: String  
   username:String
   fileurl:String
+}
+  type UserResponse
+{
+    id: ID
+    statuscode:Int
+    status: Boolean!
+    message: String!
 }
 type Manufacturerdata{
 id:ID!
@@ -60,16 +73,8 @@ type Booking{
 id:ID!
 status:String!
 }
-type UserResponse
-{
-    id: ID
-    success: Boolean!
-    message: String!
-}
-type OTPResponse {
-  status: Boolean
-  message: String
-}
+
+
 type Bookings {
   id: ID!
   dates: [String!]! 

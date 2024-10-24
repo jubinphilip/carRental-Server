@@ -1,7 +1,7 @@
 import { gql } from "apollo-server-express";
 const adminTypes = gql`
 type Admin {
-  statuscode:String!
+  statuscode:Int!
   token: String
   status: Boolean!
   message: String!
@@ -14,12 +14,12 @@ type Manufacturer{
   message:String!
 }
 type DeleteResponse{
-  statuscode:String!
+  statuscode:Int!
   status:Boolean!
   message:String!
 }
 type InsertResponse{
-statuscode:String!
+statuscode:Int!
 status:Boolean!
 message:String!
 }
@@ -44,7 +44,7 @@ status:String!
 }
 
 type UploadResponse {
-    statuscode:String!
+    statuscode:Int!
     status: Boolean!
     message: String
   }
@@ -84,7 +84,7 @@ type BookingsData{
     User:User!
   }
  type UpdateResponse{
-    statuscode:String!
+    statuscode:Int!
     status:Boolean!
     message:String!
   }  

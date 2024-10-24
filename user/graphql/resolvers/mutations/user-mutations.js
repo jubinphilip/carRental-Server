@@ -3,9 +3,10 @@ import { GraphQLUpload } from 'graphql-upload';
 import crypto from 'crypto'
 import dotenv from 'dotenv'
 import Razorpay from "razorpay";
-import { userSchema,UserDetailsSchema } from "../../../requests/user-request.js";
+import { userSchema,UserDetailsSchema, editUserSchema } from "../../../requests/user-request.js";
 import { Loginschema } from "../../../requests/user-loginrequest.js";
 import ValidationHelpers from '../../../repo/validation-helpers.js'
+import { stat } from "fs";
 
 dotenv.config()
 const userMutationController=new UserMutationController()
@@ -28,6 +29,7 @@ const userMutationResolver = {
         console.log(error)  
           return {
             id:null,
+            statuscode:422,
             email:null,
             status: false,
             message:error.details[0].message,
@@ -60,6 +62,7 @@ const userMutationResolver = {
           return{
             id:null,
             email:null,
+            statuscode:422,
             fileurl:null,
             username:null,
             token:null,
@@ -97,13 +100,23 @@ const userMutationResolver = {
     editUser:async(_,{file,input})=>
     {
       console.log("Function Called",file,input)
+     /*  const{error,value}=editUserSchema.validate(input)
+      if(error)
+      {
+        return{
+          id:null,
+          status:false,
+          statuscode:422,
+          message:error.details[0].message
+        }
+      } */
       try
       {
         const data=await userMutationController.editUserController(file,input)
         return data
       }catch(error)
       {
-        console.log("Error generated")
+        console.log("Error generated",err)
       }
     },
   //Mutation for editing the user password

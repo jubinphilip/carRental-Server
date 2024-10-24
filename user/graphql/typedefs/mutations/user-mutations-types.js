@@ -54,12 +54,12 @@ input BookingInput {
 
   type Mutation {
     addUser(file:Upload!,input: AddUserInput!): RegisterResponse
+    requestOtp(phone: String!,username:String!,email:String!): OTPResponse
+    verifyOtp(phone: String!,otp:String!): OTPResponse
     loginUser(input: LoginUserInput!): LoginResponse
     bookCar(input:BookingInput!):Booking!
     editUser(file:Upload,input: EditInput!):UserResponse!
     editUserPassword(input:EditPassword!):UserResponse!
-    requestOtp(phone: String!,username:String!,email:String!): OTPResponse
-    verifyOtp(phone: String!,otp:String!): OTPResponse
     createOrder(amount: Float!, currency: String!): Order
     verifyPayment(paymentId: String!, orderId: String!,razorpay_signature:String!, bookingId:String!): Verification!
     addReview(input:ReviewInput!):RatingResponse!

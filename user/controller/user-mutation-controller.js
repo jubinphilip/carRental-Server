@@ -19,21 +19,21 @@ class UserMutationController{
             
             if (user.status!=false) {
                 return {
+                    statuscode:200,
                     status: true,
                     message: "User Registered Successfully",
                     data: user,
                 };
 
-            } else {
-                return { 
-                    status: false,
-                    message: "Registration Failed",
-                    data: null,
-                };
-            }
-    
+            } 
         } catch (error) {
             console.log("Error in UserController:", error);
+            return { 
+                statuscode:500,
+                status: false,
+                message: "Internal Server Error",
+                data: null,
+            };
             throw new Error("Error in UserController: " + error.message); 
         }
     }
@@ -49,6 +49,7 @@ class UserMutationController{
                 const fileurl = await createPresignedUrl(user.fileurl);//the fileurl is passed to a function for getting presigned url as the userprofile  is stored in private bucket
                 console.log(user.id, user.email, fileurl); 
                 return {
+                    statuscode:200,
                     id: user.id,
                     email: user.email,
                     fileurl: fileurl || null,  //the new genearted urlis send to client side
@@ -61,6 +62,7 @@ class UserMutationController{
             else
             {
                 return {
+                    statuscode:400,
                     id: null,
                     email: null,
                     fileurl: null,  
@@ -70,7 +72,17 @@ class UserMutationController{
                 };
             }
         } catch (error) {
+
             console.log("Error in UserController:", error);
+            return {
+                statuscode:500,
+                id: null,
+                email: null,
+                fileurl: null,  
+                username:null,
+                status: false,
+                message: "Internal server Error"
+            };
             throw new Error("Error in UserController");
         }
     }
@@ -115,9 +127,23 @@ class UserMutationController{
             fileUrl=await uploadFile(file,userRole);//uploads the new image to miniobucket
             }
             const user=this.userMutationService.editUserData(fileUrl,input)
-            return user
+            if(user)
+            {
+                return{
+                    statuscode:200,
+                    status:true,
+                    message:"Data Updated",
+                   
+                }
+            }
         }catch (error) {
             console.log("Error in editUserController:", error);
+            return{
+                statuscode:500,
+                status:false,
+                message:"Updation Failed Interal Server Error",
+               
+            }
             throw new Error("Error in editUserController");
           }
     }
@@ -143,15 +169,33 @@ class UserMutationController{
         try
         {
             console.log("Otp Controller")
-          const data=  SendOtp(phone)//the phonenumber is passed to sendotp function 
+          const data=  await SendOtp(phone)//the phonenumber is passed to sendotp function 
+          console.log("Sending Otp",data)
          console.log(phone,username,email)
-          return data
+            if(data.success===true)
+            {
+                return{
+                    statuscode:200,
+                    status:true,
+                    message:"Otp has Send"
+                }
+            }
+                else
+                {
+                    return{
+                        statuscode:422,
+                        status:false,
+                        message:"Error Sending Otp"
+                    }
+            }
+            
         }catch(error)
         {
             console.log("Error sending otp")
             return{
                 status:false,
-                message:'Error Sending Otp'
+                statuscode:500,
+                message:'Internal Server Error'
             }
         }
     }
@@ -162,15 +206,34 @@ class UserMutationController{
         try
         {
           const data=  await verifyOtp(phone,otp)
+          console.log("Verify",data)
+          if(data.success===true)
+          {
           return {
             status: true,
             message: "Otp verified successfully",
-            data: data
+            statuscode:200,
           }
+        }
+        else
+        {
+            return{
+                status:false,
+                statuscode:422,
+                message:"OTP Verification Failed",
+                
+            }
+        }
 
         }catch(error)
         {
             console.log("Error sending otp")
+            return{
+                status:false,
+                statuscode:500,
+                message:'Internal Server Error',
+                
+            }
         }
     }
 

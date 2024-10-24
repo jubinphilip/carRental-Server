@@ -22,7 +22,7 @@ const verifyOtp = async (phone, otp) => {
 
         if (verificationCheck.status === 'approved') {
             console.log("Success")
-            return { state: true, message: 'OTP verified successfully' };
+            return { success: true, message: 'OTP verified successfully' };
         
         }
         return { success: false, message: 'Invalid OTP' };
