@@ -62,13 +62,22 @@ class AdminMutationController {
         try{
           const newManufacturer = await this.adminMutations.addManufacturer(input);
           console.log(newManufacturer)
-          if(newManufacturer)
+          if(newManufacturer.status==true)
           {
             return{
               statuscode:200,
               id : newManufacturer.id,
               status:true,
-              message:"Manufactured Added"
+              message:newManufacturer.message
+            }
+          }
+          else
+          {
+            return{
+              statuscode:422,
+              id:null,
+              status:false,
+              message:newManufacturer.message
             }
           }
         }
