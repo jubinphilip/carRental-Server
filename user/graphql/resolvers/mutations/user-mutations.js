@@ -99,8 +99,11 @@ const userMutationResolver = {
     //Mutation for editing the user information
     editUser:async(_,{file,input})=>
     {
+      const{email,phone}=input
       console.log("Function Called",file,input)
-     /*  const{error,value}=editUserSchema.validate(input)
+       const{error,value}= await editUserSchema.validate(input)
+
+     
       if(error)
       {
         return{
@@ -109,14 +112,35 @@ const userMutationResolver = {
           statuscode:422,
           message:error.details[0].message
         }
-      } */
-      try
-      {
-        const data=await userMutationController.editUserController(file,input)
+      } 
+      
+      const checkEmailExists = email? await validationhelpers.checkEmail(email):'';//Validating whether the user is already registered or not
+      const checkPhoneExists =phone? await validationhelpers.checkPhone(phone):'';//Validating whether the phonenumber  is already in use
+  
+      if (!checkEmailExists && !checkPhoneExists) {
+        try{
+        const data=await userMutationController.editUserController(file,value)
         return data
-      }catch(error)
-      {
-        console.log("Error generated",err)
+        }
+        catch(error)
+        {
+          console.log("Error",error)
+        }
+        //if any exist status with appropriate data is retrned
+      } else if (checkEmailExists) {
+        return {
+          statuscode:422,
+          status: false,
+          id: null,
+          message: "Email Already Exists",
+        };
+      } else if (checkPhoneExists) {
+        return {
+          statuscode:422,
+          status: false,
+          id: null,
+          message: "Phone Already Exists",
+        };
       }
     },
   //Mutation for editing the user password

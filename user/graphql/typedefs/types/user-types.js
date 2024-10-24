@@ -13,21 +13,7 @@ type OTPResponse {
   status: Boolean
   message: String
 }
-type User {
-    id: ID
-    username: String!
-    email: String
-    phone: String!
-    city: String
-    state: String
-    country: String
-    pincode: String
-    fileurl:String!
-    status:Boolean!
-    message:String!
-  }
-
-type LoginResponse {
+  type LoginResponse {
   id: ID
   statuscode:Int
   status:String
@@ -44,6 +30,20 @@ type LoginResponse {
     status: Boolean!
     message: String!
 }
+type User {
+    id: ID
+    username: String!
+    email: String
+    phone: String!
+    city: String
+    state: String
+    country: String
+    pincode: String
+    fileurl:String!
+    status:Boolean!
+    message:String!
+  }
+
 type Manufacturerdata{
 id:ID!
 manufacturer:String!

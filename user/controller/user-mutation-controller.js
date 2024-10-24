@@ -5,6 +5,7 @@ import { uploadFile } from "../../utils/upload-file.js";
 import SendOtp from "../../utils/send-otp.js";
 import { createPresignedUrl } from "../../utils/createMinioUrl.js";
 import verifyOtp from "../../utils/verify-otp.js";
+import { stat } from "fs";
 
 class UserMutationController{
     constructor(){  
@@ -133,7 +134,6 @@ class UserMutationController{
                     statuscode:200,
                     status:true,
                     message:"Data Updated",
-                   
                 }
             }
         }catch (error) {
@@ -144,7 +144,6 @@ class UserMutationController{
                 message:"Updation Failed Interal Server Error",
                
             }
-            throw new Error("Error in editUserController");
           }
     }
 
@@ -154,10 +153,30 @@ class UserMutationController{
         try
         {
             const data= await this.userMutationService.editUserPassword(input)
-            return data
+         if(data.success===true)
+         {
+            return{
+                status:true,
+                statuscode:200,
+                message:"Password Updated Successfully",
+            }
+         }
+         else
+         {
+            return{
+                status:false,
+                statuscode:400,
+                message:"Password updation Failed"
+            }
+         }
         }catch(error)
         {
             console.log("Error generated",error)
+            return{
+                status:false,
+                statuscode:500,
+                message:"Password updation Failed Interal Server Error",
+            }
         }
     }
 
