@@ -218,39 +218,50 @@ class UserMutationService{
             throw new Error('Error updating booking');
         }
     }
-    async addReview(input)
-    {
-        const{carid,userid,rating,review}=input
-        console.log(input,"input reached")
-        try{
-            const data=await Review.create(
-                {
+    async addReview(input) {
+        const { carid, userid, rating, review } = input;
+        console.log(input, "input reached");
+    
+        try {
+            // Check if the review with the same carid and userid already exists
+            const existingReview = await Review.findOne({ where: { carid, userid } });
+    
+            //if a review is already existing then the rating and review gets updated
+            if (existingReview) {
+                const updatedReview = await existingReview.update({
+                    rating,
+                    review
+                });
+    
+                console.log("Updated Review", updatedReview);
+                return {
+                    status: true,
+                    message: "Review Updated"
+                };
+            } else {
+                
+                const newReview = await Review.create({
                     carid,
                     userid,
                     rating,
                     review
-                }
-            )
-            if(data)
-            {
-                console.log("data",data)
-                return{
-                    status:true,
-                    message:"Review Added"
-                }
+                });
+    
+                console.log("New Review Created", newReview);
+                return {
+                    status: true,
+                    message: "Review Added"
+                };
             }
-            else
-            {
-                return{
-                    status:false,
-                    message:"Failed to add review"
-                }
-            }
-        }catch(error)
-        {
-            console.log("Error generated",error)
+        } catch (error) {
+            console.log("Error generated", error);
+            return {
+                status: false,
+                message: "Failed to add/update review"
+            };
         }
     }
+    
  
     
     

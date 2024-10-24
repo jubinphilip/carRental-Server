@@ -280,10 +280,31 @@ class UserMutationController{
     async reviewController(input)
     {
         try{
-            return await this.userMutationService.addReview(input)
+            const data= await this.userMutationService.addReview(input)
+            if(data.status===true)
+            {
+                return{
+                    status:true,
+                    statuscode:200,
+                    message:data.message
+                    }
+            }
+            else
+            {
+                return{
+                    status:false,
+                    statuscode:400,
+                    message:data.message
+                }
+            }
         }catch(error)
         {
             console.log("Error geenarted in controller")
+            return{
+                status:false,
+                statuscode:500,
+                message:"Internal Server Error"
+            }
         }
     }
   

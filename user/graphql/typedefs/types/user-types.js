@@ -131,7 +131,8 @@ type UserBookingsData{
     RentedVehicle:RentData!
   }
   type RatingResponse{
-    status:String!
+    status:Boolean
+    statuscode:Int
     message:String!
   }
 
