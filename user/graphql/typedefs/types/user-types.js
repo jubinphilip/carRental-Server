@@ -71,7 +71,9 @@ type Carinfo {
 
 type Booking{
 id:ID!
-status:String!
+statuscode:Int
+status:Boolean
+message:String
 }
 
 
@@ -84,8 +86,11 @@ type Bookings {
     currency: String!
     amount: Int!
   }
-  type Verification {
+type Verification {
     signature: String!
+    status:Boolean
+    statuscode:Int
+    message:String
   }
 
 type Manufacturerdata{

@@ -256,11 +256,20 @@ const userMutationResolver = {
         userMutationController.upDateBoookingController(razorpay_signature,bookingId)
     return {
       signature: generatedSignature,
+      status:true,
+      statuscode:200,
+      message:"Payment Completed Booking Confirmed"
     }
     }
   }
     catch(error)
     {
+      return{
+      signature: generatedSignature,
+      status:false,
+      statuscode:500,
+      message:"internal Server Error"
+      }
       console.log(error)
     }
   },

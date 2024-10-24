@@ -99,7 +99,9 @@ class UserMutationController{
                 console.log('Car is not available for the requested dates.');
                 return {
                     id: 1,
-                    status: "Error"
+                    status: false,
+                    statuscode:400,
+                    message:"Some Error has Occured"
                 };
             } else {
                 console.log('Car is available for the requested dates.');
@@ -108,12 +110,20 @@ class UserMutationController{
                 if (user) {
                     return {
                         id: user.id,
-                        status: "Success"
+                        status: true,
+                        statuscode:200,
+                        message:"Booking Success"
                     };
                 }
             }
         } catch (error) {
             console.log("Error booking the car", error);
+            return{
+                id: null,
+                status: false,
+                statuscode:500,
+                message:"Internal Server Error"
+            }
         }
     }
     //Controller for editing the uerinformation
