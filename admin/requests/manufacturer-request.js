@@ -11,12 +11,12 @@ const carSchema = Joi.object({
       'string.max': 'Manufacturer should have at most 50 characters',
       'any.required': 'Manufacturer is a required field'
     }),
-  model: Joi.string().min(2).max(50).required()
+  model: Joi.string().min(2).max(200).required()
     .messages({
       'string.base': 'Model should be a type of string',
       'string.empty': 'Model cannot be empty',
       'string.min': 'Model should have at least 2 characters',
-      'string.max': 'Model should have at most 50 characters',
+      'string.max': 'Model should have at most 200 characters',
       'any.required': 'Model is a required field'
     }),
   year: Joi.number().integer().min(1886).max(new Date().getFullYear()).required()
