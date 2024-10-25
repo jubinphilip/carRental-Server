@@ -1,6 +1,6 @@
 import { Booking,User } from '../../user/graphql/typedefs/models/user-models.js';
 import { Manufacturer, Vehicles,RentVehicle} from '../graphql/typedef/models/admin-models.js'
-import { Op,fn,col } from 'sequelize';
+import { Op,fn,col,Sequelize} from 'sequelize';
 class AdminQueryService{
   //Function for getting all manufacturers
     async getmanufacturersData()
@@ -119,7 +119,10 @@ class AdminQueryService{
 //Returning available cars for that daterange
                     const rentRecords=await RentVehicle.findAll({
                         where:{
-                            id:availableCarIds
+                            id:availableCarIds,
+                            quantity: {
+                                [Sequelize.Op.gt]: 0  
+                              }
                         },
                         include: {
                             model: Vehicles,
@@ -139,20 +142,26 @@ class AdminQueryService{
             else
             {
 //if daterange is not given
-            try {
-              const rentRecords = await RentVehicle.findAll({
-                  include: {
-                      model: Vehicles,
-                      include: {
-                          model: Manufacturer,
-                          attributes: ['id', 'manufacturer', 'model', 'year'],
-                      },
-                      attributes: ['id', 'type', 'seats', 'transmission', 'fileurl', 'secondaryImageUrls', 'fuel', 'description'],
-                  },
-              });
-             // console.log('Rent Records:', JSON.stringify(rentRecords, null, 2));
-              return rentRecords;
-          } catch (error) {
+try {
+    const rentRecords = await RentVehicle.findAll({
+      where: {
+        quantity: {
+          [Sequelize.Op.gt]: 0  
+        }
+      },
+      include: {
+        model: Vehicles,
+        attributes: ['id', 'type', 'seats', 'transmission', 'fileurl', 'secondaryImageUrls', 'fuel', 'description'],
+        include: {
+          model: Manufacturer,
+          attributes: ['id', 'manufacturer', 'model', 'year'],
+        }
+      }
+    });
+  
+    // console.log('Rent Records:', JSON.stringify(rentRecords, null, 2));
+    return rentRecords;
+  } catch (error) {
               console.error('Error fetching rent records:', error);
               throw error; 
           }
