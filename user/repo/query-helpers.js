@@ -3,6 +3,7 @@ import {User,Booking, Review} from '../graphql/typedefs/models/user-models.js'
 
 class UserQueryService{
   
+    //Function for getting information of a user
   async getUser(id) {
     try {
        
@@ -20,6 +21,7 @@ class UserQueryService{
         throw error;
     }
 }
+//Funcion for getting information of a car
     async getCarInfo(id) {
         try {
           const rentRecords = await RentVehicle.findAll({

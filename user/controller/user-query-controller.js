@@ -5,7 +5,7 @@ class UserQueryController{
     {
         this.userQueryService=new UserQueryService()
     }
-    //Function for retriving userdata
+    //Controller Function for retriving userdata
     async getUserdata(id)
         {
             try {
@@ -50,7 +50,7 @@ class UserQueryController{
         console.log(error)
     }
    }
-   //Function for dispalying the user his bookings
+   // Controller Function for dispalying the user his bookings
    async getUserBookings(id)
    {
     try{
@@ -64,7 +64,7 @@ class UserQueryController{
     }
    }
 
-   //Function for Retrieving Reviews and ratings by the user
+   //Controller Function for Retrieving Reviews and ratings by the user
    async getCarReviews(carid)
    {
     try{

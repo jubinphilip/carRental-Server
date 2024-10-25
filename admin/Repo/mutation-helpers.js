@@ -238,6 +238,7 @@ class AdminMutationService{
             throw new Error("Failed to update vehicle");
         }
     }
+    //Function for deleting a manufacturer
     async deleteManufacturer(id)
     {
      try

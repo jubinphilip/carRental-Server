@@ -57,7 +57,7 @@ class AdminMutationController {
               }
           }
       }
-      //
+      //Controller for adding a new manufacturer
       async addManufacturer(input){
         try{
           const newManufacturer = await this.adminMutations.addManufacturer(input);
@@ -175,7 +175,7 @@ class AdminMutationController {
             if (newVehicle) {
                 console.log("Data inserted:", newVehicle);
                 return {
-                  statuscode:200,
+                    statuscode:200,
                     status:true,
                     message:"New Vehicle Added"
                 };
@@ -199,8 +199,7 @@ class AdminMutationController {
 
         }
     }
-    
-      
+      //Controller for deleting  car
     async deleteCar(id)
     {
       try{
@@ -234,6 +233,7 @@ class AdminMutationController {
       }
     }
 
+    //Controller for deleting a rented car
     async deleteRentCar(id)
     {
       try
@@ -265,6 +265,8 @@ class AdminMutationController {
         }
       }
     }
+
+    //Controller for deleting a manufacturer
     async deleteManufacturer(id)
     {
       try
@@ -295,6 +297,8 @@ class AdminMutationController {
         }
       }
     }
+
+    //Controller for editing vehicle
     async editVehicleController(file,input)
     {
       try
@@ -310,6 +314,7 @@ class AdminMutationController {
           console.log("Data inserted")
           return{
             status:true,
+            statuscode:200,
             message:"Vehicle Details Edited"
           }
         }
@@ -317,6 +322,7 @@ class AdminMutationController {
         {
           return{
             status:false,
+            statuscode:400,
             message:"Edit Failed"
           }
         }
@@ -324,8 +330,15 @@ class AdminMutationController {
       }catch(error)
       {
         console.log("Error Occured at controller",error)
+        return{
+          status:false,
+          statuscode:500,
+          message:"Internal Server Error"
+        }
       }
     }
+
+    //Controller for adding a rentvehicle
     async rentVehicle(input)
     {
       try

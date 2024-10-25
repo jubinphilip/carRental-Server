@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server-express';
-
+//Mutations  and input types of user
 const userMutationtypes = gql`
   scalar Upload
   input AddUserInput {

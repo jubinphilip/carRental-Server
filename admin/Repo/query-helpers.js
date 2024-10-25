@@ -2,7 +2,7 @@ import { Booking,User } from '../../user/graphql/typedefs/models/user-models.js'
 import { Manufacturer, Vehicles,RentVehicle} from '../graphql/typedef/models/admin-models.js'
 import { Op,fn,col } from 'sequelize';
 class AdminQueryService{
-  
+  //Function for getting all manufacturers
     async getmanufacturersData()
     {
         try
@@ -15,6 +15,7 @@ class AdminQueryService{
             console.log("error ",error)
         }
     }
+    //Function for getting cars
     async getCars() {
         try {
             const data = await Vehicles.findAll({
@@ -28,6 +29,7 @@ class AdminQueryService{
             console.log(error);
         }
     }
+    //Function for getting a single car
     async handleGetCar(id)
     {
         try {
@@ -47,20 +49,22 @@ class AdminQueryService{
             throw new Error(error.message);
           }
         }
-        async getRentedVehicles(dateRange) {
+    //Function for getting all rented vehicles  for both admin and user
+        async getRentedVehicles(dateRange) {//date range is optional when a user logins he sometimes passes a daterange 
             if(dateRange)
             {
+                //if date range is present deal with it
             const [date1, date2] = dateRange;
             const convertedstartDate = new Date(date1);
             const convertedendDate = new Date(date2);
-            convertedstartDate.setDate(convertedstartDate.getDate() + 1);
+            convertedstartDate.setDate(convertedstartDate.getDate() + 1);//ond day is added with incoming date so that it deals with the conflicts of GMT
             convertedendDate.setDate(convertedendDate.getDate() + 1);
-            
+            //converts date to startdate and enddate
             if (convertedendDate && convertedstartDate) {
                 const startDate = new Date(convertedstartDate).toISOString().split('T')[0];
                 const endDate = new Date(convertedendDate).toISOString().split('T')[0];
                 console.log("Start Date:", startDate, "End Date:", endDate);
-        
+        //Finds all bookings
                 try {
                     const bookings = await Booking.findAll({
                         where: {
@@ -90,7 +94,7 @@ class AdminQueryService{
                         ],
                         group: ['carid'],
                     });
-  
+  //Finds  all rentedvehicles
                     const rentdata = await RentVehicle.findAll();
                     //console.log("Vehicles", rentdata);
         
@@ -112,7 +116,7 @@ class AdminQueryService{
 
                     console.log("Available Vehicles", availableVehicles);
                     console.log("Available Car IDs", availableCarIds);
-
+//Returning available cars for that daterange
                     const rentRecords=await RentVehicle.findAll({
                         where:{
                             id:availableCarIds
@@ -134,7 +138,7 @@ class AdminQueryService{
             }
             else
             {
-
+//if daterange is not given
             try {
               const rentRecords = await RentVehicle.findAll({
                   include: {
@@ -154,7 +158,7 @@ class AdminQueryService{
           }
       }
     }
-      
+     //Function for returning all bookings 
       async getAllBookings() {
         try {
             const records = await Booking.findAll({

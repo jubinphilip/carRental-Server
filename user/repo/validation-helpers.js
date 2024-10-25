@@ -1,5 +1,6 @@
 import { User } from "../graphql/typedefs/models/user-models.js";
 
+//Class for validating user email and phone when he registers into the website checks email or phone is already existing or not
 class ValidationHelpers {
   async checkEmail(email) {
     console.log("Checking email:", email); 

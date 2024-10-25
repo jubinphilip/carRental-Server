@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server-express';
- 
+ //The mutation of admins and its input types
 const adminMutationtypes = gql`
 scalar Upload
 input AddManufacturer{
@@ -40,7 +40,7 @@ type Mutation {
   deleteManufacturer(id:ID!):DeleteResponse!
   deleteVehicle(id:ID!):  DeleteResponse!
   deleteRentVehicles(id:ID!): DeleteResponse!
-  editVehicle(file:Upload!,input: Vehicledata!): InsertResponse!
+  editVehicle(file:Upload,input: Vehicledata!): InsertResponse!
   addRent(input:Rentdata!): InsertResponse!
   uploadExcel(file: Upload!): UploadResponse!
   updateReturnVehicle(input:updateBooking!):UpdateResponse!

@@ -104,7 +104,7 @@ const Booking = sequelize.define('Bookings', {
     }
   });
 
-
+//Model for storing review
   const Review=sequelize.define('Reviews',{
     id:{
       type: DataTypes.INTEGER,
@@ -134,6 +134,7 @@ const Booking = sequelize.define('Bookings', {
       
   })
   
+  //Setting Relations
 User.hasMany(Booking, { foreignKey: 'userid' });
 Booking.belongsTo(User, { foreignKey: 'userid' });
 
