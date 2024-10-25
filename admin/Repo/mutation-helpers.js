@@ -53,7 +53,7 @@ class AdminMutationService{
     
             // Check if a manufacturer and model combination already exists
             const existingManufacturer = await Manufacturer.findOne({
-                where: { manufacturer, model }
+                where: { manufacturer, model,year }
             });
     
             if (existingManufacturer) {
