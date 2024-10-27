@@ -1,9 +1,9 @@
 import { createToken } from "../../utils/createtoken.js";
 import AdminMutationService from "../Repo/mutation-helpers.js";
-import { uploadFile } from "../../utils/upload-file.js";
+import { uploadFile } from "../../utils/minio/upload-file.js";
 import { parseExcel } from "../../utils/parse-excel.js";
-import { createCollection } from "../../utils/create-typesense.js";
-import { deleteCarByCarId, deleteCarFromTypesense } from "../../utils/manage-typesense.js";
+import { createCollection } from "../../utils/typesense/create-typesense.js";
+import { deleteCarByCarId, deleteCarFromTypesense } from "../../utils/typesense/manage-typesense.js";
 class AdminMutationController {
     constructor() {
      this.adminMutations=new AdminMutationService()

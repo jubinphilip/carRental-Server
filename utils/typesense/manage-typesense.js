@@ -1,4 +1,4 @@
-import typesenseClient from "../config/typesense-config.js";
+import typesenseClient from "../../config/typesense-config.js";
 
 //Function for adding a new car to the typesnse collection
 export const addVehicleToCollection = async (vehicleData) => {

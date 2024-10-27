@@ -1,10 +1,10 @@
 import UserMutationService from "../Repo/mutation-helpers.js";
 import { createToken } from "../../utils/createtoken.js";
-import { uploadFile } from "../../utils/upload-file.js";
+import { uploadFile } from "../../utils/minio/upload-file.js";
 
-import SendOtp from "../../utils/send-otp.js";
-import { createPresignedUrl } from "../../utils/createMinioUrl.js";
-import verifyOtp from "../../utils/verify-otp.js";
+import SendOtp from "../../utils/otp/send-otp.js";
+import { createPresignedUrl } from "../../utils/minio/createMinioUrl.js";
+import verifyOtp from "../../utils/otp/verify-otp.js";
 import { stat } from "fs";
 
 class UserMutationController{
@@ -93,15 +93,15 @@ class UserMutationController{
         try {
             //Function for checking the availability of the car
             const availability = await this.userMutationService.checkCarAvailability(startdate, enddate, carid);//Checking the availability of car before booking the car 
-            console.log(availability.length);
+         console.log(availability)
             //if not available then send response
-            if (availability.length >= quantity) {
+            if (availability >= quantity) {
                 console.log('Car is not available for the requested dates.');
                 return {
                     id: 1,
                     status: false,
                     statuscode:400,
-                    message:"Some Error has Occured"
+                    message:"Car is Temporarly Unavailable"
                 };
             } else {
                 console.log('Car is available for the requested dates.');
@@ -271,10 +271,32 @@ class UserMutationController{
     {
         try
         {
-           await this.userMutationService.updateBooking(sign,id)
+        const bookingUpdate=await this.userMutationService.updateBooking(sign,id)
+        if(bookingUpdate.success===true)
+        {
+            return{
+                statuscode:200,
+                status:true,
+                message:bookingUpdate.message
+            }
+        }
+        else
+        {
+            return{
+                statuscode:204,
+                status:false,
+                message:bookingUpdate.message
+            }
+        }
         }catch(error)
         {
             console.log("Error Updating Payment",error)
+            return{
+                statuscode:500,
+                status:false,
+                message:'Internal Server Error',
+            }
+         
         }
     }
 

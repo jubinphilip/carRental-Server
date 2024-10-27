@@ -1,4 +1,4 @@
-import { createPresignedUrl } from "../../utils/createMinioUrl.js"
+import { createPresignedUrl } from "../../utils/minio/createMinioUrl.js"
 import UserQueryService from "../repo/query-helpers.js"
 class UserQueryController{
     constructor()

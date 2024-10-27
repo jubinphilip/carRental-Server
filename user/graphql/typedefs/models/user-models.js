@@ -133,6 +133,40 @@ const Booking = sequelize.define('Bookings', {
       }
       
   })
+
+  //Model For Storing Booking Information temporarly
+  const BookingCart=sequelize.define('BookingCart',{
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
+    bookingid:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Booking,
+        key: 'id',
+      },
+    },
+    carid: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: RentVehicle,
+        key: 'id',
+      },
+    },
+    startdate: {
+      type: DataTypes.STRING,
+    },
+    enddate: {
+      type: DataTypes.STRING,
+    },
+    status:{
+      type:DataTypes.STRING
+    }
+  })
   
   //Setting Relations
 User.hasMany(Booking, { foreignKey: 'userid' });
@@ -140,6 +174,11 @@ Booking.belongsTo(User, { foreignKey: 'userid' });
 
 RentVehicle.hasMany(Booking, { foreignKey: 'carid' });
 Booking.belongsTo(RentVehicle, { foreignKey: 'carid' });
+
+BookingCart.belongsTo(Booking, { foreignKey: 'bookingid' });
+BookingCart.belongsTo(RentVehicle, { foreignKey: 'carid' });
+Booking.hasMany(BookingCart, { foreignKey: 'bookingid' });
+RentVehicle.hasMany(BookingCart, { foreignKey: 'carid' });
 
 User.hasMany(Review, {
   foreignKey: 'userid', 
@@ -160,4 +199,4 @@ Review.belongsTo(RentVehicle, {
 });
 
 
-export {User,Booking,Review}
+export {User,Booking,Review,BookingCart}

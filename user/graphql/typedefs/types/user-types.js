@@ -87,7 +87,6 @@ type Bookings {
     amount: Int!
   }
 type Verification {
-    signature: String!
     status:Boolean
     statuscode:Int
     message:String

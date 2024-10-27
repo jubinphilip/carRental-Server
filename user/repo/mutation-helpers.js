@@ -1,6 +1,6 @@
 
 import bcrypt from 'bcrypt'
-import {Booking, Review, User} from '../graphql/typedefs/models/user-models.js';
+import {Booking, BookingCart, Review, User} from '../graphql/typedefs/models/user-models.js';
 import {  Op } from 'sequelize';
 import sequelize from '../../config/db.js';
 import { RentVehicle } from '../../admin/graphql/typedef/models/admin-models.js';
@@ -52,12 +52,11 @@ class UserMutationService{
     //Function for checking the availablity of cars at requested dates
     async checkCarAvailability(startdate, enddate, carid) {
         try {
-            return await Booking.findAll({
+            const bookings= await Booking.findAll({
                 where: {
                     carid: carid,
-                    //Fincing all bookings at that date where payment_status is completed
-
-                    payment_status: 'Completed',
+                    payment_status:"Completed",
+                    //Finding all bookings at that date where payment_status is completed
                     [Op.or]: [
                         {
                             startdate: {
@@ -78,6 +77,34 @@ class UserMutationService{
                     ],
                 },
             });
+     //Finding all bookings from temporary Bookings table for dealing with concurrent bookings
+            const temporaryBookings=await BookingCart.findAll({
+                where: {
+                    carid: carid,
+               
+                    [Op.or]: [
+                        {
+                            startdate: {
+                                [Op.lte]: enddate,
+                            },
+                            enddate: {
+                                [Op.gte]: startdate,
+                            },
+                        },
+                        {
+                            startdate: {
+                                [Op.gte]: startdate,
+                            },
+                            enddate: {
+                                [Op.lte]: enddate,
+                            },
+                        }
+                    ],
+                },
+            });
+
+            const totalBookings=temporaryBookings.length+bookings.length
+            return totalBookings
         } catch (error) {
             console.log("Error checking availability", error);
             throw error;
@@ -132,6 +159,15 @@ class UserMutationService{
                 status:"Pending"//before payment is done by default pending is inserted
             }, { transaction });
             await transaction.commit();//After Successfull booking transaction is committed
+            //Creating a Temporary Storage for Bookings for dealing with concurrency
+            console.log("BookingData",booking.dataValues.id)
+            const cart=await BookingCart.create({
+                bookingid:booking.dataValues.id,
+                carid,
+                startdate,
+                enddate,
+                payment:"Pending"
+            })
             return booking;
         } catch (error) {
 
@@ -196,7 +232,13 @@ class UserMutationService{
 //Function which updates the booking status after successfull payment verification
     async updateBooking(sign, id) {
         try {
-            const updatedBooking = await Booking.update(
+            const bookingCart = await BookingCart.findOne({
+                where: { bookingid: id }, 
+              });
+              console.log("Bookingcart",bookingCart)
+              if(bookingCart)
+                {  
+                const updatedBooking = await Booking.update(
                 {
                     payment_status: 'Completed',//Booking status is changed to Completed from Pending
                     razorpay_signature: sign 
@@ -207,12 +249,29 @@ class UserMutationService{
                     }
                 }
             );
+            await bookingCart.destroy(bookingCart.id)
             if (updatedBooking[0] === 0) {
                 console.log('No booking found with the provided ID.');
                 return { success: false, message: 'No booking found.' };
             }
             console.log('Booking updated successfully:', updatedBooking);
             return { success: true, message: 'Booking updated successfully.' };
+        }
+        else
+        {
+            const updatedBooking = await Booking.update(
+                {
+                    payment_status: 'Booking Failed',//Booking status is changed to Failed from Pending 
+                    razorpay_signature: sign 
+                },
+                {
+                    where: {
+                        id: id
+                    }
+                })
+            console.log("Booking not found")
+            return { success: false, message: 'Booking has Timed Out your Money Will Be Refunded' };
+        }
         } catch (error) {
             console.error('Error updating booking:', error);
             throw new Error('Error updating booking');

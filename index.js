@@ -2,9 +2,10 @@ import express from 'express'
 import cors from 'cors'
 import { ApolloServer } from 'apollo-server-express'
 import dotenv from 'dotenv'
-import typeDefs from './utils/manage-typedef.js'
-import resolvers from './utils/manage-resolver.js'
+import typeDefs from './utils/resolver/manage-typedef.js'
+import resolvers from './utils/resolver/manage-resolver.js'
 import sequelize from './config/db.js'
+import clearBooking from './utils/clearBooking.js'
 dotenv.config()
 const app=express()
 app.use(cors())
@@ -27,6 +28,7 @@ sequelize.sync().then(()=>{
         console.log(err)
     })
 
+clearBooking()
 //starting the server 
 app.listen(process.env.PORT,()=>{
     console.log(`server is running on port ${process.env.PORT}`)

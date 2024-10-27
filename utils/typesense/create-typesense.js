@@ -1,4 +1,4 @@
-import typesenseClient from "../config/typesense-config.js";
+import typesenseClient from "../../config/typesense-config.js";
 
 export const createCollection = async () => {
     //Schema for creating a collection in typesense

@@ -80,6 +80,8 @@ type BookingsData{
     startlocation :String!
     droplocation:String!
     status:String
+     createdAt:String!
+    payment_status:String
     RentedVehicle:RentData!
     User:User!
   }

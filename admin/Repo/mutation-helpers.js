@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { Admin,Manufacturer, Vehicles,RentVehicle} from '../graphql/typedef/models/admin-models.js'
-import  {addVehicleToCollection}  from '../../utils/manage-typesense.js'
+import  {addVehicleToCollection}  from '../../utils/typesense/manage-typesense.js'
 import { Booking } from '../../user/graphql/typedefs/models/user-models.js'
 import { Sequelize } from 'sequelize'
 

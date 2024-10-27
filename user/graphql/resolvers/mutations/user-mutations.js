@@ -253,13 +253,16 @@ const userMutationResolver = {
       console.log(generatedSignature)
       if (generatedSignature === razorpay_signature) {
         //after verification the booking id and razorpay_signature is passed to controller razorpay_signature is stored in db along with booking for further verification
-        userMutationController.upDateBoookingController(razorpay_signature,bookingId)
-    return {
-      signature: generatedSignature,
-      status:true,
-      statuscode:200,
-      message:"Payment Completed Booking Confirmed"
+      const data= await userMutationController.upDateBoookingController(razorpay_signature,bookingId)
+      return data
     }
+    else
+    {
+      return{      
+      statuscode:400,
+      status:failed,
+      message:"Payment could not be authenticated Timed Out"
+      }
     }
   }
     catch(error)

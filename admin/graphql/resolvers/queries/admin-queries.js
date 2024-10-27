@@ -58,7 +58,14 @@ const adminQueryResolver = {
   //Query for getting all bookings
   getBookings:async()=>
   {
-   const data=adminQueryController.bookingController()
+    try
+    {
+   const data=await adminQueryController.bookingController()
+   return data
+    }catch(error)
+    {
+      console.log("Error",error)
+    }
    return data
   }
 }

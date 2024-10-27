@@ -103,7 +103,7 @@ class AdminQueryService{
                         bookingsMap[booking.dataValues.carid] = booking.dataValues.count;
                     });
         
-                    console.log("Maap",bookingsMap)
+                    console.log("Map",bookingsMap)
 
                     const availableVehicles = rentdata.filter(vehicle => {
                         const id = String(vehicle.dataValues.id); 
@@ -168,12 +168,9 @@ try {
       }
     }
      //Function for returning all bookings 
-      async getAllBookings() {
+     async getAllBookings() {
         try {
             const records = await Booking.findAll({
-                where: {
-                    payment_status: 'Completed' 
-                },
                 include: [
                     {
                         model: User,
