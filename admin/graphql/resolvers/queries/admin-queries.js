@@ -13,7 +13,7 @@ const adminQueryResolver = {
         }
         return admin;
       } catch (error) {
-        console.error("Error Fetching Admin:", error);
+       // console.error("Error Fetching Admin:", error);
         throw new ApolloError('Error fetching admin', 'INTERNAL_SERVER_ERROR');
       }
     },
@@ -27,20 +27,33 @@ const adminQueryResolver = {
         return data
       }catch(error)
       {
-        console.log(error,'Error Occured')
+       // console.log(error,'Error Occured')
+       throw new ApolloError('Error fetching manufacturers', 'INTERNAL_SERVER_ERROR');
       }
   },
 
   //Query for getting All Vehicles
   getCarsData:async()=>{
+    try
+    {
     const cars=adminQueryController.getCars()
     return cars
+    }
+    catch(error)
+    {
+      throw new Error("Error getting cars")
+    }
   },
   //Query for getting vehicle by id for editing
   getCarData:async(_,{id})=>{
-    console.log("Function Called")
+    try{
     const cars=adminQueryController.getCar(id)
     return cars
+    }
+    catch(error)
+    {
+      throw new Error("Error getting cars data")
+    }
   },
   //Query for getting rentvehicles
   rentVehicles:async(_,args)=>{
@@ -51,7 +64,8 @@ const adminQueryResolver = {
     return data
     }catch(error)
     {
-      console.log("Error")
+      //console.log("Error")
+      throw new ApolloError('Error fetching rent vehicles', 'INTERNAL_SERVER_ERROR');
     }
   },
 
@@ -64,7 +78,8 @@ const adminQueryResolver = {
    return data
     }catch(error)
     {
-      console.log("Error",error)
+      //console.log("Error",error)
+      throw new Error("Error fetching bookings")
     }
    return data
   }

@@ -12,11 +12,11 @@ class AdminMutationService{
             //hashing password
             const hashedPassword = await bcrypt.hash(password, 10)
             const admin = await Admin.create({username,password:hashedPassword})
-            console.log(admin)
+           // console.log(admin)
             return admin
         }catch(error)
         {
-            console.log(error)
+           // console.log(error)
             throw new Error("error adding admin")
         }
     }
@@ -27,7 +27,7 @@ class AdminMutationService{
             const { email, password } = input;
             const username=email
             const admin = await Admin.findOne({ where: { username } });
-            console.log(admin)
+           // console.log(admin)
             if (!admin) {
                 return { error: "Admin not found", status: false };
             }
@@ -40,7 +40,7 @@ class AdminMutationService{
                admin
             };
         } catch (error) {
-            console.log("Error logging in admin", error);
+           // console.log("Error logging in admin", error);
             throw new Error("Internal server error");
         }
     }
@@ -48,7 +48,7 @@ class AdminMutationService{
     //Function for adding a new manufactufrer to the database
     async addManufacturer(input) {
         try {
-            console.log(input);
+          //  console.log(input);
             const { manufacturer, model, year } = input;
     
             // Check if a manufacturer and model combination already exists
@@ -72,7 +72,7 @@ class AdminMutationService{
                 message: "Manufacturer added successfully",
             };
         } catch (error) {
-            console.log(error);
+           // console.log(error);
             throw new Error("Error adding manufacturer");
         }
     }
@@ -97,7 +97,7 @@ class AdminMutationService{
           }
         }catch(error)
         {
-            console.log(error)
+            throw new Error(error)
             return{
                 status:false
             }
@@ -121,7 +121,7 @@ class AdminMutationService{
                 });
                 return newVehicle;
             } catch (error) {
-                console.log("Error occurred while inserting into database", error);
+                //console.log("Error occurred while inserting into database", error);
                 throw new Error("Database insertion failed");
             }
         }
@@ -153,7 +153,7 @@ class AdminMutationService{
                     price,
                     quantity
                 });
-                console.log("Data Added");
+                //console.log("Data Added");
         
                 const id = newCar.id;
                 //Getting details of added car using id
@@ -184,17 +184,19 @@ class AdminMutationService{
                             type: rentRecords.Vehicle?.type || '', 
                         };
                 
-                        console.log("TypeSense Data", vehicleData);
+                      //  console.log("TypeSense Data", vehicleData);
                         //Passing the vehicle data to a function for adding the details to typesense
                         await addVehicleToCollection(vehicleData);
                     }
                     return newCar;
                 } catch (error) {
-                    console.log("Error finding rent records:", error);
+                  //  console.log("Error finding rent records:", error);
+                  throw new Error(error)
                 }
                 }
             } catch (error) {
-                console.log("Error creating rent vehicle:", error);
+                throw new Error("Some Error Occured while renting vehicle")
+               // console.log("Error creating rent vehicle:", error);
             }
         }
 
@@ -221,20 +223,20 @@ class AdminMutationService{
                 });
     
                 if (updatedRowsCount > 0) {
-                    console.log("Vehicle updated successfully.");
+                   // console.log("Vehicle updated successfully.");
                
                     const updatedVehicle = await Vehicles.findByPk(id);
                     return updatedVehicle;
                 } else {
-                    console.log("No vehicle found with the provided ID.");
+                   // console.log("No vehicle found with the provided ID.");
                     return null; 
                 }
             } else {
-                console.log("No fields to update. Incoming data is all null.");
+               // console.log("No fields to update. Incoming data is all null.");
                 return null; 
             }
         } catch (error) {
-            console.log("Error occurred while updating the database:", error);
+            //console.log("Error occurred while updating the database:", error);
             throw new Error("Failed to update vehicle");
         }
     }
@@ -247,7 +249,7 @@ class AdminMutationService{
        return data
      }catch(error)
      {
-        console.log(error)
+      //  console.log(error)
         throw new Error
      }
     }
@@ -257,10 +259,11 @@ class AdminMutationService{
             const deletedVehicle = await Vehicles.destroy({
               where: { id },
             })
-            console.log(deletedVehicle)
+          //  console.log(deletedVehicle)
             return deletedVehicle
         }catch (error) {
-            console.log(error);
+            throw new Error("Error deleting Vehicle")
+            //console.log(error);
         }
     }
 
@@ -271,10 +274,11 @@ class AdminMutationService{
             const deletedVehicle = await RentVehicle.destroy({
               where: { id },
             })
-            console.log(deletedVehicle)
+           // console.log(deletedVehicle)
             return deletedVehicle
         }catch (error) {
-            console.log(error);
+           // console.log(error);
+           throw new Error("Error deleting Rent Vehicle")
         }
     }
 
@@ -293,12 +297,13 @@ class AdminMutationService{
                         }
                     }
                 );
-                console.log('Booking status updated to Returned');
+                //console.log('Booking status updated to Returned');
                 return{
                     status:true
                 }
             } catch (error) {
-                console.error('Error updating booking status:', error);
+              //  console.error('Error updating booking status:', error);
+              throw new Error("Error While updating Booking")
             }
         }
         else
@@ -322,16 +327,19 @@ class AdminMutationService{
                             }
                         }
                     );
-                    console.log('Quantity decreased by one for car ID:', carid);
+                  //  console.log('Quantity decreased by one for car ID:', carid);
                 } catch (error) {
-                    console.error('Error updating vehicle quantity:', error);
+                  //  console.error('Error updating vehicle quantity:', error);
+                  throw new Error("Error While updating Vehicle")
                 }
                 
                 return{
                     status:true,
                 }
             } catch (error) {
-                console.error('Error updating booking status:', error);
+
+                //console.error('Error updating booking status:', error);
+                throw new Error("Error updating Booking status")
             }
         }
     }

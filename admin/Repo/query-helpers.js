@@ -12,7 +12,8 @@ class AdminQueryService{
         }
         catch(error)
         {
-            console.log("error ",error)
+          //  console.log("error ",error)
+          throw new Error("Error finding manufacturers")
         }
     }
     //Function for getting cars
@@ -26,7 +27,8 @@ class AdminQueryService{
             });
             return data;
         } catch (error) {
-            console.log(error);
+           // console.log(error);
+           throw new Error("Error finding cars");
         }
     }
     //Function for getting a single car
@@ -103,19 +105,19 @@ class AdminQueryService{
                         bookingsMap[booking.dataValues.carid] = booking.dataValues.count;
                     });
         
-                    console.log("Map",bookingsMap)
+                 //   console.log("Map",bookingsMap)
 
                     const availableVehicles = rentdata.filter(vehicle => {
                         const id = String(vehicle.dataValues.id); 
                         const bookingCount = parseInt(bookingsMap[id] || '0'); 
-                        console.log(id, vehicle.dataValues.quantity, bookingCount, "bookingsCount");
+                       // console.log(id, vehicle.dataValues.quantity, bookingCount, "bookingsCount");
                         return bookingCount < vehicle.dataValues.quantity; 
                     });
                     
                     const availableCarIds = availableVehicles.map(vehicle => vehicle.dataValues.id);
 
-                    console.log("Available Vehicles", availableVehicles);
-                    console.log("Available Car IDs", availableCarIds);
+                    //console.log("Available Vehicles", availableVehicles);
+                    //console.log("Available Car IDs", availableCarIds);
 //Returning available cars for that daterange
                     const rentRecords=await RentVehicle.findAll({
                         where:{
@@ -135,7 +137,8 @@ class AdminQueryService{
                     })
                     return rentRecords;
                 } catch (error) {
-                    console.log("Error:", error);
+                   // console.log("Error:", error);
+                   throw new Error("Error getting Vehicles")
                 }
             }
             }
@@ -194,7 +197,7 @@ try {
                     },
                 ],
             });
-            console.log(JSON.stringify(records, null, 2)); 
+          //  console.log(JSON.stringify(records, null, 2)); 
             return records;
         } catch (error) {
             console.error('Error fetching booking records:', error);

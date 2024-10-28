@@ -11,7 +11,7 @@ const adminMutationResolver = {
       try {
         return await adminMutationController.addAdmin(input);
       } catch (error) {
-        console.log("Error adding admin:", error);
+      //  console.log("Error adding admin:", error);
         throw new Error("Error adding admin");
       }
     },
@@ -23,7 +23,7 @@ adminLogin: async (_, { input }) => {
     const { value, error } = Loginschema.validate({ email, password });
     // Handle validation error
     if (error) {
-      console.log(error);
+     // console.log(error);
       return {
         statuscode:422,
         status: false,
@@ -33,7 +33,7 @@ adminLogin: async (_, { input }) => {
     return await adminMutationController.adminLogin(value);
     
   } catch (error) {
-    console.log("Error In Login", error);
+  //  console.log("Error In Login", error);
     throw new Error("Login Error");
   }
 },
@@ -42,10 +42,10 @@ adminLogin: async (_, { input }) => {
 //mutation for adding a Manufacturer
     addManufacturer:async(_,{input})=>{
       try{
-          console.log(input)
+         // console.log(input)
           const{value,error}=carSchema.validate(input)
           if(error){
-            console.log(error)
+           // console.log(error)
             return{
               id:null,
               statuscode:422,
@@ -57,18 +57,19 @@ adminLogin: async (_, { input }) => {
       }
       catch(error)
       {
-        console.log(error)
+        //console.log(error)
+        throw new Error(error)
 
       }
     },
 //Mutation for adding a new vehicle
     addVehicle: async (_, { primaryFile, secondaryFiles, input }) => {
       try {
-        console.log(primaryFile,secondaryFiles,input)
+     //   console.log(primaryFile,secondaryFiles,input)
         const{value,error}=await vehicleSchema.validate(input)
         if(error)
         {
-          console.log(error)
+       //   console.log(error)
           return{
             statuscode:422,
             status:false,
@@ -77,14 +78,12 @@ adminLogin: async (_, { input }) => {
         }
         else
         {
-          console.log(value)
-        }
-        const vehicle = await adminMutationController.addVehicleController(primaryFile, secondaryFiles, input);
-  
+         // console.log(value)
+        const vehicle = await adminMutationController.addVehicleController(primaryFile, secondaryFiles, value);
           return vehicle; 
-        
+        }
       } catch (error) {
-        console.error("Error adding vehicle:", error);
+      //  console.error("Error adding vehicle:", error);
         throw new Error("Failed to add vehicle");
       }
     },
@@ -97,7 +96,8 @@ adminLogin: async (_, { input }) => {
       return data
       }catch(error)
       {
-        console.log(error)
+      //  console.log(error)
+      throw new Error("Error deleting Manufacturer")
       }
     },
   //Mutation for deleting  a car
@@ -108,7 +108,8 @@ adminLogin: async (_, { input }) => {
       return deletedVehicle
     }catch(error)
     {
-      console.error("Error deleting vehicle:", error);
+      //console.error("Error deleting vehicle:", error);
+      throw new Error("Error deleting vehicle")
     }
   },
 
@@ -120,7 +121,8 @@ adminLogin: async (_, { input }) => {
       return deletedVehicle
     }catch(error)
     {
-      console.error("Error deleting vehicle:", error);
+      //console.error("Error deleting vehicle:", error);
+      throw new Error("Error deleting vehicle")
     }
   },
   //Mutation for editing a vehicle information
@@ -132,7 +134,8 @@ adminLogin: async (_, { input }) => {
       return Vehicle
     }catch(error)
     {
-      console.error("Error adding vehicle:", error);
+      //console.error("Error adding vehicle:", error);
+      throw new Error("Error editing vehicle")
     }
   },
 
@@ -140,12 +143,12 @@ adminLogin: async (_, { input }) => {
   addRent:async(_,{input})=>
     {
       try{
-          console.log("Function Called")
         const Vehicle=await adminMutationController.rentVehicle(input)
         return Vehicle
       }catch(error)
       {
-        console.error("Error adding vehicle:", error);
+      //  console.error("Error adding vehicle:", error);
+      throw new Error("Error adding vehicle to rent")
       }
     },
 
@@ -156,8 +159,8 @@ uploadExcel: async (parent, { file }) => {
       return await adminMutationController.addExcelData(file)
   }catch(error)
   {
-    console.log("error reading data")
-    return
+   // console.log("error reading data")
+    throw new Error("Error uplaoding Excel")
   }
 },
 //Mutation for dealing with the  return of vehicle
@@ -168,7 +171,8 @@ updateReturnVehicle:async(_,{input})=>
         return await adminMutationController.updateBookingController(input)
       }catch(error)
       {
-        console.log(error)
+       // console.log(error)
+       throw new Error("Error updating return vehicle")
       }
     }
   }
