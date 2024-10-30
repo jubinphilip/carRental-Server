@@ -48,34 +48,34 @@ class AdminMutationService{
     //Function for adding a new manufactufrer to the database
     async addManufacturer(input) {
         try {
-          //  console.log(input);
             const { manufacturer, model, year } = input;
+            const syear=String(year)
     
             // Check if a manufacturer and model combination already exists
             const existingManufacturer = await Manufacturer.findOne({
-                where: { manufacturer, model,year }
+                where: { manufacturer, model, year:syear}
             });
     
             if (existingManufacturer) {
-                // If the combination exists, return an error message
                 return {
                     status: false,
                     message: "Data Already Exist"
                 };
             }
     
-            // If not found, create a new entry
-            const data = await Manufacturer.create({ manufacturer, model, year });
+            // Create a new entry if not found
+            await Manufacturer.create({ manufacturer, model, year });
             
             return {
                 status: true,
-                message: "Manufacturer added successfully",
+                message: "Manufacturer added successfully"
             };
         } catch (error) {
-           // console.log(error);
+            console.error("Error in addManufacturer:", error); 
             throw new Error("Error adding manufacturer");
         }
     }
+    
     
 
     //Function for adding new manufacturer from excelsheet to database
