@@ -10,8 +10,8 @@ type Admin {
 type Manufacturer{
   id:ID
   statuscode:String
-  status:Boolean!
-  message:String!
+  status:Boolean
+  message:String
 }
 type DeleteResponse{
   statuscode:Int!
@@ -34,8 +34,8 @@ type AdminData {
 type Manufacturerdata{
 id:ID!
 manufacturer:String!
-model:String!
-year:String!
+model:String
+year:String
 }
 
 type Vehicle{

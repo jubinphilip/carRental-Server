@@ -44,12 +44,6 @@ type User {
     message:String!
   }
 
-type Manufacturerdata{
-id:ID!
-manufacturer:String!
-model:String!
-year:String!
-}
 
 type CarsData {
   id: ID!
@@ -95,8 +89,8 @@ type Verification {
 type Manufacturerdata{
 id:ID!
 manufacturer:String!
-model:String!
-year:String!
+model:String
+year:String
 }
 
 

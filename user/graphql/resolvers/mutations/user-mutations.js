@@ -6,7 +6,7 @@ import Razorpay from "razorpay";
 import { userSchema,UserDetailsSchema, editUserSchema } from "../../../requests/user-request.js";
 import { Loginschema } from "../../../requests/user-loginrequest.js";
 import ValidationHelpers from '../../../repo/validation-helpers.js'
-import { stat } from "fs";
+
 
 dotenv.config()
 const userMutationController=new UserMutationController()
@@ -82,8 +82,11 @@ const userMutationResolver = {
   },
 
     //Mutation for Booking  a car
-    bookCar:async(_,{input})=>
+    bookCar:async(_,{input},context)=>
     {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+    }
        console.log(input)
         try
         {
@@ -97,10 +100,12 @@ const userMutationResolver = {
     },
 
     //Mutation for editing the user information
-    editUser:async(_,{file,input})=>
+    editUser:async(_,{file,input},context)=>
     {
       const{email,phone}=input
-      console.log("Function Called",file,input)
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+    }
        const{error,value}= await editUserSchema.validate(input)
 
      
@@ -144,8 +149,11 @@ const userMutationResolver = {
       }
     },
   //Mutation for editing the user password
-    editUserPassword:async(_,{input})=>
+    editUserPassword:async(_,{input},context)=>
     {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+    }
       try
       { 
         const data=await userMutationController.editPasswordController(input)
@@ -212,8 +220,11 @@ const userMutationResolver = {
     },
   
 //Mutation for creating a razorpay Order
- createOrder : async (_,{ amount, currency }) => {
+ createOrder : async (_,{ amount, currency },context) => {
   console.log("Create Order Function Invoked");
+  if (!context.user) {
+    throw new AuthenticationError('You must be logged in to add a manufacturer');
+}
   const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,  
@@ -243,8 +254,11 @@ const userMutationResolver = {
 },
 
 //Mutation for verifying the payment done by the user
-  verifyPayment :async(_,{paymentId,orderId,razorpay_signature,bookingId})=>
+  verifyPayment :async(_,{paymentId,orderId,razorpay_signature,bookingId},context)=>
   {
+    if (!context.user) {
+      throw new AuthenticationError('You must be logged in to add a manufacturer');
+  }
     try
     {
     const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
@@ -277,8 +291,11 @@ const userMutationResolver = {
     }
   },
   //Mutation for adding rating for a car
-  addReview:async(_,{input})=>
+  addReview:async(_,{input},context)=>
   {
+    if (!context.user) {
+      throw new AuthenticationError('You must be logged in to add a manufacturer');
+  }
     try{
       const review = await userMutationController.reviewController(input)
       return review

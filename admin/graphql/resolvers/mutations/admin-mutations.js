@@ -1,7 +1,7 @@
 import AdminMutationController from '../../../controller/admin-mutation-controller.js';
 const adminMutationController=new AdminMutationController()
 import { Loginschema } from '../../../../user/requests/user-loginrequest.js';
-import { carSchema, vehicleSchema } from '../../../requests/manufacturer-request.js';
+import { carSchema, modelSchema, vehicleSchema } from '../../../requests/manufacturer-request.js';
 import { GraphQLUpload } from 'graphql-upload';
 const adminMutationResolver = {
   Upload: GraphQLUpload,//GraphQLUploadFor handling imageupload
@@ -40,7 +40,11 @@ adminLogin: async (_, { input }) => {
 
 
 //mutation for adding a Manufacturer
-    addManufacturer:async(_,{input})=>{
+    addManufacturer:async(_,{input},context)=>{
+      console.log(input)
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+    }
       try{
          // console.log(input)
           const{value,error}=carSchema.validate(input)
@@ -62,8 +66,48 @@ adminLogin: async (_, { input }) => {
 
       }
     },
+    addModel:async(_,{input},context)=>
+    {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+    }
+      try
+      {
+      const{model,year}=input
+      const validate={
+        model:model,
+        year:year
+      }
+      const{value,error}=modelSchema.validate(validate)
+      if(error)
+      {
+        return{
+          id:null,
+          statuscode:422,
+          status:false,
+          message:error.details[0].message
+        }
+      }
+      else
+      {
+        const data={
+          id:input.id,
+          model:value.model,
+          year:value.year
+        }
+        return await adminMutationController.addModelController(data)
+      }
+      }
+      catch(error)
+      {
+        throw new Error(error)
+      }
+    },
 //Mutation for adding a new vehicle
-    addVehicle: async (_, { primaryFile, secondaryFiles, input }) => {
+    addVehicle: async (_, { primaryFile, secondaryFiles, input },context) => {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+    }
       try {
      //   console.log(primaryFile,secondaryFiles,input)
         const{value,error}=await vehicleSchema.validate(input)
@@ -88,8 +132,11 @@ adminLogin: async (_, { input }) => {
       }
     },
   //Mutation for deleting a manufacturer
-    deleteManufacturer:async(_,{id})=>
+    deleteManufacturer:async(_,{id},context)=>
     {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+      }
       try
       {
       const data=await adminMutationController.deleteManufacturer(id)
@@ -101,8 +148,10 @@ adminLogin: async (_, { input }) => {
       }
     },
   //Mutation for deleting  a car
-  deleteVehicle:async(_,{id})=>{
-  
+  deleteVehicle:async(_,{id},context)=>{
+    if (!context.user) {
+      throw new AuthenticationError('You must be logged in to add a manufacturer');
+  }
     try{
       const deletedVehicle=await adminMutationController.deleteCar(id)
       return deletedVehicle
@@ -114,8 +163,11 @@ adminLogin: async (_, { input }) => {
   },
 
   //Mutation for deleting a rented vehicle
-  deleteRentVehicles:async(_,{id})=>
+  deleteRentVehicles:async(_,{id},context)=>
   {
+    if (!context.user) {
+      throw new AuthenticationError('You must be logged in to add a manufacturer');
+  }
     try{
       const deletedVehicle=await adminMutationController.deleteRentCar(id)
       return deletedVehicle
@@ -126,8 +178,11 @@ adminLogin: async (_, { input }) => {
     }
   },
   //Mutation for editing a vehicle information
-  editVehicle:async(_,{file,input})=>
+  editVehicle:async(_,{file,input},context)=>
   {
+    if (!context.user) {
+      throw new AuthenticationError('You must be logged in to add a manufacturer');
+  }
     try{
         
       const Vehicle=await adminMutationController.editVehicleController(file,input)
@@ -140,8 +195,11 @@ adminLogin: async (_, { input }) => {
   },
 
   //Mutation for adding vehicle to rent
-  addRent:async(_,{input})=>
+  addRent:async(_,{input},context)=>
     {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+    }
       try{
         const Vehicle=await adminMutationController.rentVehicle(input)
         return Vehicle
@@ -153,7 +211,10 @@ adminLogin: async (_, { input }) => {
     },
 
 //mutation for adding data from an excel sheet to database
-uploadExcel: async (parent, { file }) => {
+uploadExcel: async (parent, { file },context) => {
+  if (!context.user) {
+    throw new AuthenticationError('You must be logged in to add a manufacturer');
+}
   try
   {
       return await adminMutationController.addExcelData(file)
@@ -164,8 +225,11 @@ uploadExcel: async (parent, { file }) => {
   }
 },
 //Mutation for dealing with the  return of vehicle
-updateReturnVehicle:async(_,{input})=>
+updateReturnVehicle:async(_,{input},context)=>
     {
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to add a manufacturer');
+    }
       try
       {
         return await adminMutationController.updateBookingController(input)

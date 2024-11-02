@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-express';
 const adminQuerytypes = gql`
   type Query {
     getAdmin(id: ID!): Admin
-    getManufacturers: [Manufacturerdata]!
+    getManufacturers: [Manufacturerdata]
     getCarsData:[CarsData]!
     getCarData(id:ID!):CarsData!
     rentVehicles(dateRange:[String]):[RentData]

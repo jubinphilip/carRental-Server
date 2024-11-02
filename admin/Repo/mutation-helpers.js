@@ -2,7 +2,8 @@ import bcrypt from 'bcrypt'
 import { Admin,Manufacturer, Vehicles,RentVehicle} from '../graphql/typedef/models/admin-models.js'
 import  {addVehicleToCollection}  from '../../utils/typesense/manage-typesense.js'
 import { Booking } from '../../user/graphql/typedefs/models/user-models.js'
-import { Sequelize } from 'sequelize'
+import { Sequelize, where } from 'sequelize'
+
 
 class AdminMutationService{
     //Function for adding admin  values to the database
@@ -48,24 +49,23 @@ class AdminMutationService{
     //Function for adding a new manufactufrer to the database
     async addManufacturer(input) {
         try {
-            const { manufacturer, model, year } = input;
-            const syear=String(year)
+            console.log(input)
+            const { manufacturer } = input;
     
             // Check if a manufacturer and model combination already exists
             const existingManufacturer = await Manufacturer.findOne({
-                where: { manufacturer, model, year:syear}
+                where: { manufacturer}
             });
     
             if (existingManufacturer) {
                 return {
                     status: false,
-                    message: "Data Already Exist"
+                    message: "Manufacturer Already Exist"
                 };
             }
     
             // Create a new entry if not found
-            await Manufacturer.create({ manufacturer, model, year });
-            
+            await Manufacturer.create({ manufacturer,model:null,year:null});  
             return {
                 status: true,
                 message: "Manufacturer added successfully"
@@ -75,7 +75,38 @@ class AdminMutationService{
             throw new Error("Error adding manufacturer");
         }
     }
+    //update the table
+    async addmodel(input) {
+        const { id, model, year } = input;
+        const manid = Number(id);
+        console.log("Helpers", input);
     
+        try {
+            // Retrieve the manufacturer information by unique id
+            const maninfo = await Manufacturer.findOne({ where: { id: manid } });
+            console.log(maninfo);
+    
+            // Check if the manufacturer exists and has a null model
+            if (maninfo && !maninfo.model) {
+                const [updatedRows] = await Manufacturer.update(
+                    { model, year },
+                    { where: { id: manid } }
+                );
+    
+                return { status: updatedRows > 0 };
+            } 
+            // If the manufacturer already has a model, create a new entry
+            else if (maninfo) {
+                await Manufacturer.create({ manufacturer: maninfo.manufacturer, model, year });
+                return { status: true };
+            } else {
+                console.log("Manufacturer not found.");
+                return { status: false };
+            }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
     
 
     //Function for adding new manufacturer from excelsheet to database

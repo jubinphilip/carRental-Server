@@ -4,6 +4,9 @@ const adminMutationtypes = gql`
 scalar Upload
 input AddManufacturer{
   manufacturer:String!
+}
+input AddModel{
+  id:ID!
   model:String!
   year:String!
 }
@@ -36,6 +39,7 @@ type Mutation {
   addAdmin(input: AdminInput!): AdminData!  
   adminLogin(input: AdminInput!): Admin
   addManufacturer(input: AddManufacturer!): Manufacturer!
+  addModel(input:AddModel!):Manufacturer!
   addVehicle(primaryFile: Upload!, secondaryFiles: [Upload!]!, input: Vehicledata!): InsertResponse!
   deleteManufacturer(id:ID!):DeleteResponse!
   deleteVehicle(id:ID!):  DeleteResponse!

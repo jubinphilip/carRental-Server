@@ -94,7 +94,35 @@ class AdminMutationController {
         }
       }
       //Function for adding exce data to manufacturers model
-      
+      async addModelController(input)
+      {
+        try{
+          const newModel=await this.adminMutations.addmodel(input)
+          if(newModel.status===true)
+          {
+            return{
+              status:true,
+              statuscode:200,
+              message:"Model Added"
+            }
+          }
+          else
+          {
+            return{
+            statuscode:422,
+            status:false,
+            message:"Model not Added"
+            }
+          }
+        }catch(error)
+        {
+          return{
+            status:false,
+            statuscode:500,
+            message:"Internal Server Error"
+          }
+        }
+      }
       async addExcelData(file) {
         try {
           console.log("File Structure", file);

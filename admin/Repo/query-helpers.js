@@ -7,7 +7,8 @@ class AdminQueryService{
     {
         try
         {
-       const data= await Manufacturer.findAll()
+            const data = await Manufacturer.findAll();
+            
        return data
         }
         catch(error)

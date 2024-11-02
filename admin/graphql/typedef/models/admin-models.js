@@ -34,11 +34,11 @@ const Manufacturer = sequelize.define('Manufacturer', {
     },
     model: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     year: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     }
 });
 
